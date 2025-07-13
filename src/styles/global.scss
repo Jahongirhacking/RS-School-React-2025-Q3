@@ -1,0 +1,75 @@
+@import "./normalize.scss";
+
+* {
+  color: #fff;
+  background-color: #000;
+  border-color: #ddd;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .nav {
+    padding: 20px 10px;
+    background-color: rgb(34, 34, 34);
+
+    input,
+    button {
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      background-color: inherit;
+
+      input {
+        padding: 5px 10px;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button {
+        padding: 5px 10px;
+      }
+    }
+  }
+
+  .main {
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: calc(100dvh - 80px);
+    min-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    background-image: url("/background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    h3 {
+      background-color: transparent;
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: transparent;
+
+      .card {
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+      }
+    }
+  }
+}
