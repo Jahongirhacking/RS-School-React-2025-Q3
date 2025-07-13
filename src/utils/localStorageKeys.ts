@@ -1,3 +1,3 @@
 export default {
-  searched: "searched",
+  searched: 'searched',
 };

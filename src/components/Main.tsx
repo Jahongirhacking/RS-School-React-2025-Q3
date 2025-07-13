@@ -1,10 +1,10 @@
-import { Component } from "react";
-import IPerson from "../types/IPerson";
+import { Component } from 'react';
+import IPerson from '../types/IPerson';
 
 interface MainProps {
   items: IPerson[];
   searched: string;
-  status: "ok" | "pending" | "error";
+  status: 'ok' | 'pending' | 'error';
 }
 
 export default class Main extends Component<MainProps> {
@@ -13,9 +13,9 @@ export default class Main extends Component<MainProps> {
       <main className="main">
         <h3>Searched: {this.props.searched}</h3>
         <div className="card-container">
-          {this.props.status === "pending" && "Loading..."}
-          {this.props.status === "error" && "There is an error!"}
-          {this.props.status === "ok" && (
+          {this.props.status === 'pending' && 'Loading...'}
+          {this.props.status === 'error' && 'There is an error!'}
+          {this.props.status === 'ok' && (
             <>
               {this?.props.items?.length
                 ? this.props?.items?.map((item) => (
@@ -26,7 +26,7 @@ export default class Main extends Component<MainProps> {
                       </p>
                     </div>
                   ))
-                : "The list is empty"}
+                : 'The list is empty'}
             </>
           )}
         </div>

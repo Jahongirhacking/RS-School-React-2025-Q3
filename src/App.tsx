@@ -1,15 +1,13 @@
-import { Component } from "react";
-import Navbar from "./components/Navbar";
-import Main from "./components/Main";
-import IPerson from "./types/IPerson";
-import fetchApi from "./utils/fetchApi";
-import handleLocalStorage from "./utils/handleLocalStorage";
-import localStorageKeys from "./utils/localStorageKeys";
-
-interface AppProps {}
+import { Component } from 'react';
+import Navbar from './components/Navbar';
+import Main from './components/Main';
+import IPerson from './types/IPerson';
+import fetchApi from './utils/fetchApi';
+import handleLocalStorage from './utils/handleLocalStorage';
+import localStorageKeys from './utils/localStorageKeys';
 
 interface IApiData {
-  status: "ok" | "pending" | "error";
+  status: 'ok' | 'pending' | 'error';
   count: number;
   next: string | null;
   previous: string | null;
@@ -24,21 +22,21 @@ interface AppState {
 }
 
 const initialData: IApiData = {
-  status: "ok",
+  status: 'ok',
   count: 0,
   next: null,
   previous: null,
   results: [],
 };
 
-const apiURL = "https://swapi.dev/api/people";
+const apiURL = 'https://swapi.dev/api/people';
 
-export default class App extends Component<AppProps, AppState> {
-  constructor(props: AppProps) {
+export default class App extends Component<object, AppState> {
+  constructor(props: object) {
     super(props);
     this.state = {
-      inputValue: "",
-      searched: "",
+      inputValue: '',
+      searched: '',
       page: 1,
       apiData: initialData,
     };
@@ -50,15 +48,15 @@ export default class App extends Component<AppProps, AppState> {
       this.setState({
         apiData: {
           ...this.state.apiData,
-          status: "pending",
+          status: 'pending',
         },
       });
       const data: IApiData = await fetchApi(
-        `${apiURL}?page=${this.state.page}`,
+        `${apiURL}?page=${this.state.page}`
       );
       this.setState({
         apiData: {
-          status: "ok",
+          status: 'ok',
           count: data.count,
           next: data.next,
           previous: data.previous,
@@ -71,30 +69,28 @@ export default class App extends Component<AppProps, AppState> {
             .filter((person) =>
               person.name
                 .toLowerCase()
-                .includes(this.state.searched.toLowerCase()),
+                .includes(this.state.searched.toLowerCase())
             ),
         },
       });
     } catch (err) {
+      console.error(err);
       this.setState({
         apiData: {
           ...initialData,
-          status: "error",
+          status: 'error',
         },
       });
     }
   }
 
   componentDidMount(): void {
-    const initialValue = handleLocalStorage(localStorageKeys.searched, "");
+    const initialValue = handleLocalStorage(localStorageKeys.searched, '');
     this.setState({ searched: initialValue, inputValue: initialValue });
     this.handleFetchPeople();
   }
 
-  componentDidUpdate(
-    _: Readonly<AppProps>,
-    prevState: Readonly<AppState>,
-  ): void {
+  componentDidUpdate(_: Readonly<object>, prevState: Readonly<AppState>): void {
     if (prevState.searched !== this.state.searched) {
       localStorage.setItem(localStorageKeys.searched, this.state.searched);
       this.handleFetchPeople();
