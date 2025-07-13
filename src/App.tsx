@@ -6,7 +6,7 @@ import fetchApi from "./utils/fetchApi";
 import handleLocalStorage from "./utils/handleLocalStorage";
 import localStorageKeys from "./utils/localStorageKeys";
 
-interface AppProps { }
+interface AppProps {}
 
 interface IApiData {
   status: "ok" | "pending" | "error";
@@ -50,10 +50,12 @@ export default class App extends Component<AppProps, AppState> {
       this.setState({
         apiData: {
           ...this.state.apiData,
-          status: "pending"
-        }
-      })
-      const data: IApiData = await fetchApi(`${apiURL}?page=${this.state.page}`);
+          status: "pending",
+        },
+      });
+      const data: IApiData = await fetchApi(
+        `${apiURL}?page=${this.state.page}`,
+      );
       this.setState({
         apiData: {
           status: "ok",
@@ -78,8 +80,8 @@ export default class App extends Component<AppProps, AppState> {
         apiData: {
           ...initialData,
           status: "error",
-        }
-      })
+        },
+      });
     }
   }
 
