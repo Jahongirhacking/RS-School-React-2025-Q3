@@ -29,7 +29,7 @@ const initialData: IApiData = {
   results: [],
 };
 
-const apiURL = 'https://swapi.dev/api/people';
+const apiURL = 'https://swapi.py4e.com/api/people';
 
 export default class App extends Component<object, AppState> {
   constructor(props: object) {
