@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import handleLocalStorage from '../utils/handleLocalStorage';
-import localStorageKeys from '../utils/localStorageKeys';
+import ErrorButton from './ErrorButton';
+import Input from './Input';
+import SearchButton from './SearchButton';
 
 interface NavbarProps {
   setInputValue: (value: string) => void;
@@ -11,20 +12,12 @@ interface NavbarState {
   hasError: boolean;
 }
 
-const defaultValue = '';
-
 export default class Navbar extends Component<NavbarProps, NavbarState> {
   constructor(props: NavbarProps) {
     super(props);
     this.state = {
       hasError: false,
     };
-  }
-
-  componentDidMount(): void {
-    this.props.setInputValue(
-      handleLocalStorage(localStorageKeys.searched, defaultValue)
-    );
   }
 
   render() {
@@ -35,21 +28,9 @@ export default class Navbar extends Component<NavbarProps, NavbarState> {
     return (
       <nav className="nav">
         <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            defaultValue={handleLocalStorage(localStorageKeys.searched, '')}
-            onChange={(e) => {
-              this.props.setInputValue(e.target.value);
-            }}
-          />
-
-          <button type="submit" onClick={() => this.props.onBtnClick()}>
-            Search
-          </button>
-
-          <button onClick={() => this.setState({ hasError: true })}>
-            Error!
-          </button>
+          <Input setInputValue={this.props.setInputValue} />
+          <SearchButton onBtnClick={() => this.props.onBtnClick()} />
+          <ErrorButton makeError={() => this.setState({ hasError: true })} />
         </form>
       </nav>
     );
