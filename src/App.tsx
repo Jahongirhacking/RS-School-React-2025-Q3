@@ -1,14 +1,19 @@
 import { Component } from 'react';
-import Navbar from './components/Navbar';
 import Main from './components/Main';
+import Navbar from './components/Navbar';
 import IPerson from './types/IPerson';
 import fetchApi from './utils/fetchApi';
 import handleLocalStorage from './utils/handleLocalStorage';
 import localStorageKeys from './utils/localStorageKeys';
 
+interface AppProps {
+  onBtnClick?: (value: string) => void;
+}
+
 interface IApiData {
   status: 'ok' | 'pending' | 'error';
   count: number;
+  statusCode: number;
   next: string | null;
   previous: string | null;
   results: IPerson[];
@@ -27,12 +32,13 @@ const initialData: IApiData = {
   next: null,
   previous: null,
   results: [],
+  statusCode: 200,
 };
 
 const apiURL = 'https://swapi.py4e.com/api/people';
 
-export default class App extends Component<object, AppState> {
-  constructor(props: object) {
+export default class App extends Component<AppProps, AppState> {
+  constructor(props: AppProps) {
     super(props);
     this.state = {
       inputValue: '',
@@ -57,6 +63,7 @@ export default class App extends Component<object, AppState> {
       this.setState({
         apiData: {
           status: 'ok',
+          statusCode: 200,
           count: data.count,
           next: data.next,
           previous: data.previous,
@@ -75,10 +82,17 @@ export default class App extends Component<object, AppState> {
       });
     } catch (err) {
       console.error(err);
+
+      const statusCode =
+        typeof err === 'object' && err !== null && 'status' in err
+          ? (err as { status: number }).status
+          : 500;
+
       this.setState({
         apiData: {
           ...initialData,
           status: 'error',
+          statusCode,
         },
       });
     }
@@ -102,10 +116,15 @@ export default class App extends Component<object, AppState> {
       <div className="container">
         <Navbar
           setInputValue={(value: string) => {
-            this.setState({ inputValue: value });
+            this.setState({ inputValue: value?.trim() });
           }}
           onBtnClick={() => {
-            this.setState({ searched: this.state.inputValue });
+            const value = this.state.inputValue?.trim();
+            if (this.props.onBtnClick) {
+              this.props.onBtnClick(value);
+            } else {
+              this.setState({ searched: value });
+            }
           }}
         />
         <hr />
@@ -113,6 +132,7 @@ export default class App extends Component<object, AppState> {
           items={this.state.apiData.results}
           status={this.state.apiData.status}
           searched={this.state.searched}
+          statusCode={this.state.apiData.statusCode}
         />
       </div>
     );

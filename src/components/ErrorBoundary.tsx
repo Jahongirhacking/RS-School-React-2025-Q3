@@ -25,7 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <>
-          <h1>Sorry.. there was an error!</h1>
+          <h1 role="alert">Sorry.. there was an error!</h1>
           <a href="/">Back to home</a>
         </>
       );
