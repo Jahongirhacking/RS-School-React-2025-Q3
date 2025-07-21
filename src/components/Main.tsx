@@ -22,9 +22,9 @@ export default class Main extends Component<MainProps> {
           {this.props.status === 'ok' && (
             <>
               {this?.props.items?.length
-                ? this.props?.items?.map((item) => (
+                ? this.props?.items?.map((item, index) => (
                     <div
-                      key={item.created}
+                      key={item.created || index}
                       className="card"
                       data-testid="person-card"
                     >
