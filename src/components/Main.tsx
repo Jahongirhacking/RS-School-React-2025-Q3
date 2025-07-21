@@ -5,6 +5,7 @@ interface MainProps {
   items: IPerson[];
   searched: string;
   status: 'ok' | 'pending' | 'error';
+  statusCode: number;
 }
 
 export default class Main extends Component<MainProps> {
@@ -13,16 +14,25 @@ export default class Main extends Component<MainProps> {
       <main className="main">
         <h3>Searched: {this.props.searched}</h3>
         <div className="card-container">
-          {this.props.status === 'pending' && 'Loading...'}
-          {this.props.status === 'error' && 'There is an error!'}
+          {this.props.status === 'pending' && (
+            <span aria-label="loading">Loading...</span>
+          )}
+          {this.props.status === 'error' &&
+            `There is an error! ${this?.props?.statusCode}`}
           {this.props.status === 'ok' && (
             <>
               {this?.props.items?.length
-                ? this.props?.items?.map((item) => (
-                    <div key={item.created} className="card">
-                      <h4 className="person-name">{item.name}</h4>
+                ? this.props?.items?.map((item, index) => (
+                    <div
+                      key={item.created || index}
+                      className="card"
+                      data-testid="person-card"
+                    >
+                      <h4 className="person-name">
+                        {item.name ?? 'not defined'}
+                      </h4>
                       <p>
-                        Height: <b>{item.height}</b>
+                        Height: <b>{item.height ?? 'not defined'}</b>
                       </p>
                     </div>
                   ))
