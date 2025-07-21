@@ -11,7 +11,11 @@ class SearchButton extends Component<Props> {
 
   render() {
     return (
-      <button type="submit" onClick={this.handleClick}>
+      <button
+        type="submit"
+        onClick={this.handleClick}
+        style={{ cursor: 'pointer' }}
+      >
         Search
       </button>
     );
