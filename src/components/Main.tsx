@@ -28,9 +28,11 @@ export default class Main extends Component<MainProps> {
                       className="card"
                       data-testid="person-card"
                     >
-                      <h4 className="person-name">{item.name}</h4>
+                      <h4 className="person-name">
+                        {item.name ?? 'not defined'}
+                      </h4>
                       <p>
-                        Height: <b>{item.height}</b>
+                        Height: <b>{item.height ?? 'not defined'}</b>
                       </p>
                     </div>
                   ))

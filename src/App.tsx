@@ -58,7 +58,7 @@ export default class App extends Component<AppProps, AppState> {
         },
       });
       const data: IApiData = await fetchApi(
-        `${apiURL}?page=${this.state.page}`
+        `${apiURL}?${[...(this.state.searched ? [`search=${this.state.searched}`] : []), `page=${this.state.page}`].join('&')}`
       );
       this.setState({
         apiData: {
@@ -67,17 +67,11 @@ export default class App extends Component<AppProps, AppState> {
           count: data.count,
           next: data.next,
           previous: data.previous,
-          results: data.results
-            .map((person) => ({
-              name: person.name,
-              height: person.height,
-              created: person.created,
-            }))
-            .filter((person) =>
-              person.name
-                .toLowerCase()
-                .includes(this.state.searched.toLowerCase())
-            ),
+          results: data.results.map((person) => ({
+            name: person.name,
+            height: person.height,
+            created: person.created,
+          })),
         },
       });
     } catch (err) {

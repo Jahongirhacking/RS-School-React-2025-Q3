@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import App from '../App';
 
@@ -8,8 +8,10 @@ describe('Results/CardList Component Tests', () => {
     localStorage.clear();
   };
 
-  beforeEach(() => {
-    render(<App />);
+  beforeEach(async () => {
+    await act(async () => {
+      render(<App />);
+    });
   });
 
   afterEach(() => {
@@ -132,9 +134,14 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      await act(async () => {
+        render(<App />);
+      });
 
-      expect(await screen.findByText(/there is an error/i)).toBeInTheDocument(); // fallback text in card
+      const card = await screen.findByTestId('person-card');
+      expect(within(card).getAllByText(/not defined/i).length).toBeGreaterThan(
+        0
+      );
     });
   });
 

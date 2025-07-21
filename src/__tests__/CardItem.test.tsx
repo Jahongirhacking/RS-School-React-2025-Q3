@@ -1,5 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import App from '../App';
 
@@ -73,7 +79,10 @@ describe('Card/Item Component Tests', () => {
       });
 
       // Check that fallback text appears
-      expect(screen.getByText(/there is an error/i)).toBeInTheDocument(); // assuming fallback
+      const card = await screen.findByTestId('person-card');
+      expect(within(card).getAllByText(/not defined/i).length).toBeGreaterThan(
+        0
+      );
     });
   });
 });
