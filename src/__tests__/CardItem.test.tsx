@@ -6,8 +6,9 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
-import App from '../App';
+import MainPage from '../pages/MainPage';
 
 describe('Card/Item Component Tests', () => {
   const clearApp = () => {
@@ -16,7 +17,7 @@ describe('Card/Item Component Tests', () => {
   };
 
   beforeEach(() => {
-    render(<App />);
+    render(<BrowserRouter><MainPage /></BrowserRouter>);
   });
 
   afterEach(() => {
@@ -43,7 +44,7 @@ describe('Card/Item Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
 
       const card = await screen.findByTestId('person-card');
       expect(card).toBeInTheDocument();
@@ -70,7 +71,7 @@ describe('Card/Item Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
 
       await waitFor(() => {
         expect(

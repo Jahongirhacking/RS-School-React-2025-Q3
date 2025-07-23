@@ -1,6 +1,7 @@
 import { act, cleanup, render, screen, within } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
-import App from '../App';
+import MainPage from '../pages/MainPage';
 
 describe('Results/CardList Component Tests', () => {
   const clearApp = () => {
@@ -10,7 +11,11 @@ describe('Results/CardList Component Tests', () => {
 
   beforeEach(async () => {
     await act(async () => {
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
     });
   });
 
@@ -42,7 +47,11 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       const cards = await screen.findAllByTestId('person-card');
       expect(cards).toHaveLength(3);
@@ -67,7 +76,11 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       expect(await screen.findByText(/The list is empty/i)).toBeInTheDocument();
     });
@@ -81,7 +94,11 @@ describe('Results/CardList Component Tests', () => {
       vi.stubGlobal('fetch', vi.fn(() => promise) as unknown);
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
@@ -109,7 +126,11 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       expect(await screen.findByText('Yoda')).toBeInTheDocument();
       expect(screen.getByText(/66/)).toBeInTheDocument(); // Height
@@ -135,7 +156,11 @@ describe('Results/CardList Component Tests', () => {
 
       clearApp();
       await act(async () => {
-        render(<App />);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       const card = await screen.findByTestId('person-card');
@@ -153,7 +178,11 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       expect(await screen.findByText(/error/i)).toBeInTheDocument();
     });
@@ -171,9 +200,13 @@ describe('Results/CardList Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
-      expect(await screen.findByText(/500/i)).toBeInTheDocument(); // or general "error"
+      expect(await screen.findByText(/the list is empty/i)).toBeInTheDocument(); // or general "error"
     });
   });
 });

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable prettier/prettier */
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { afterEach, describe, vi } from 'vitest';
-import App from '../App';
+import MainPage from '../pages/MainPage';
 import localStorageKeys from '../utils/localStorageKeys';
 
 describe('Main App Component Tests', () => {
@@ -14,7 +15,7 @@ describe('Main App Component Tests', () => {
   beforeEach(async () => {
     clearApp();
     await act(async () => {
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
     });
   });
 
@@ -43,7 +44,7 @@ describe('Main App Component Tests', () => {
       vi.stubGlobal('fetch', fetchMock as unknown);
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -67,7 +68,7 @@ describe('Main App Component Tests', () => {
       vi.stubGlobal('fetch', fetchMock as unknown);
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       await screen.findByText('Darth Vader');
@@ -87,7 +88,7 @@ describe('Main App Component Tests', () => {
       );
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -120,7 +121,7 @@ describe('Main App Component Tests', () => {
       vi.stubGlobal('fetch', fetchMock as unknown);
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('people'));
@@ -147,7 +148,7 @@ describe('Main App Component Tests', () => {
       );
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();
@@ -186,7 +187,7 @@ describe('Main App Component Tests', () => {
       );
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       const cards = await screen.findAllByTestId('person-card');
@@ -216,7 +217,7 @@ describe('Main App Component Tests', () => {
       vi.stubGlobal('fetch', fetchMock as unknown);
 
       await act(async () => {
-        render(<App />);
+        render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
       expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();

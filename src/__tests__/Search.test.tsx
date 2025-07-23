@@ -1,9 +1,10 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
-import App from '../App';
 import Input from '../components/Input';
 import SearchButton from '../components/SearchButton';
+import MainPage from '../pages/MainPage';
 import localStorageKeys from '../utils/localStorageKeys';
 
 describe('Search test', () => {
@@ -69,7 +70,11 @@ describe('Search test', () => {
 
     test('Saves search term to localStorage when search button is clicked', async () => {
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
       const value = 'Vader';
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText(
@@ -83,7 +88,11 @@ describe('Search test', () => {
 
     test('Trims whitespace from search input before saving', async () => {
       clearApp();
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
       const value = '  Vader  ';
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText(
@@ -99,7 +108,11 @@ describe('Search test', () => {
 
     test('Triggers search callback with correct parameters', async () => {
       clearApp();
-      render(<App onBtnClick={mockSearch} />);
+      render(
+        <BrowserRouter>
+          <MainPage onBtnClick={mockSearch} />
+        </BrowserRouter>
+      );
       const value = 'hello';
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText(
@@ -124,7 +137,11 @@ describe('Search test', () => {
     test('Overwrites existing localStorage value when new search is performed', async () => {
       clearApp();
       localStorage.setItem(localStorageKeys.searched, 'oldterm');
-      render(<App />);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       const user = userEvent.setup();
       const input = screen.getByDisplayValue('oldterm') as HTMLInputElement;

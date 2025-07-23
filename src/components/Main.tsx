@@ -1,46 +1,43 @@
-import { Component } from 'react';
-import IPerson from '../types/IPerson';
+import { useContext } from 'react';
+import { MainContext, MainProps } from '../pages/mainContext';
+import Pagination from './Pagination';
+import PersonCard from './PersonCard';
 
-interface MainProps {
-  items: IPerson[];
-  searched: string;
-  status: 'ok' | 'pending' | 'error';
-  statusCode: number;
-}
+const Main = () => {
+  const context = useContext(MainContext);
+  const { searched, apiData } = context ?? ({} as MainProps);
 
-export default class Main extends Component<MainProps> {
-  render() {
-    return (
-      <main className="main">
-        <h3>Searched: {this.props.searched}</h3>
-        <div className="card-container">
-          {this.props.status === 'pending' && (
-            <span aria-label="loading">Loading...</span>
-          )}
-          {this.props.status === 'error' &&
-            `There is an error! ${this?.props?.statusCode}`}
-          {this.props.status === 'ok' && (
-            <>
-              {this?.props.items?.length
-                ? this.props?.items?.map((item, index) => (
-                    <div
-                      key={item.created || index}
-                      className="card"
-                      data-testid="person-card"
-                    >
-                      <h4 className="person-name">
-                        {item.name ?? 'not defined'}
-                      </h4>
-                      <p>
-                        Height: <b>{item.height ?? 'not defined'}</b>
-                      </p>
-                    </div>
-                  ))
-                : 'The list is empty'}
-            </>
-          )}
-        </div>
-      </main>
-    );
-  }
-}
+  return (
+    <main className="main">
+      <h3>Searched: {searched}</h3>
+      <div className="card-container">
+        {apiData?.status === 'pending' && (
+          <span aria-label="loading">Loading...</span>
+        )}
+
+        {apiData?.status === 'error' && (
+          <span>There is an error! {apiData?.statusCode}</span>
+        )}
+
+        {apiData?.status === 'ok' && (
+          <>
+            {apiData?.results?.length ? (
+              <>
+                <div className="card-box">
+                  {apiData?.results?.map((item, index) => (
+                    <PersonCard key={item.created || index} person={item} />
+                  ))}
+                </div>
+                <Pagination />
+              </>
+            ) : (
+              'The list is empty'
+            )}
+          </>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export default Main;

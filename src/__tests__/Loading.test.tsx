@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { afterEach, describe, expect, vi } from 'vitest';
-import App from '../App';
+import MainPage from '../pages/MainPage';
 
 describe('Loading Component Tests', () => {
   const clearApp = () => {
@@ -32,7 +33,7 @@ describe('Loading Component Tests', () => {
       vi.stubGlobal('fetch', vi.fn(delayedFetch) as unknown);
 
       clearApp();
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
 
       // Expect loading indicator to be present before data loads
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -64,7 +65,7 @@ describe('Loading Component Tests', () => {
       );
 
       clearApp();
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
 
       await screen.findByText(/luke/i); // Wait for data to render
 
@@ -89,7 +90,7 @@ describe('Loading Component Tests', () => {
       vi.stubGlobal('fetch', vi.fn(delayedFetch) as unknown);
 
       clearApp();
-      render(<App />);
+      render(<BrowserRouter><MainPage /></BrowserRouter>);
 
       // Expect ARIA role or label to exist (depending on your implementation)
       const loadingElement = screen.getByLabelText(/loading/i);
