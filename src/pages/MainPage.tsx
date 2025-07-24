@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import Main from '../components/Main';
 import Navbar from '../components/Navbar';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
-import fetchApi from '../utils/fetchApi';
 import handleLocalStorage from '../utils/handleLocalStorage';
 import localStorageKeys from '../utils/localStorageKeys';
 import { MainContext } from './mainContext';
@@ -41,69 +41,83 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
   );
   const [searchParams, setSearchParams] = useSearchParams();
   const [apiData, setApiData] = useState<IApiData>(initialData);
-  const page = searchParams.get(SearchParams.Page) ?? DEFAULT_PAGE;
+  const page = searchParams.get(SearchParams.Page);
+  const oldSearched = useRef(searched);
+
+  const fetchPeople = useCallback(async () => {
+    try {
+      setApiData((prev) => ({
+        ...prev,
+        status: 'pending',
+      }));
+
+      const data: IApiData = (
+        await axios.get(`${apiURL}`, {
+          params: {
+            search: searched || undefined,
+            page,
+          },
+        })
+      )?.data;
+
+      setApiData({
+        ...data,
+        status: 'ok',
+        statusCode: 200,
+      });
+    } catch (err) {
+      console.error(err);
+      const statusCode =
+        typeof err === 'object' && err !== null && 'status' in err
+          ? (err as { status: number }).status
+          : 500;
+
+      setApiData({
+        ...initialData,
+        status: 'error',
+        statusCode,
+      });
+    }
+  }, [page, searched]);
 
   const changePage = useCallback(
-    (page: number) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(SearchParams.Page, String(page));
-      setSearchParams(params);
+    (value: string) => {
+      setSearchParams((prevParams) => {
+        const nextParams = new URLSearchParams(prevParams.toString());
+        if (value) {
+          nextParams.set(SearchParams.Page, value);
+        } else {
+          nextParams.delete(SearchParams.Page);
+        }
+        if (nextParams.toString() === prevParams.toString()) {
+          return prevParams; // no change
+        }
+        return nextParams;
+      });
     },
-    [searchParams, setSearchParams]
+    [setSearchParams]
   );
 
   useEffect(() => {
     if (!searchParams.has(SearchParams.Page)) {
-      changePage(DEFAULT_PAGE);
+      changePage(String(DEFAULT_PAGE));
+      return;
     }
   }, [changePage, searchParams]);
 
   useEffect(() => {
-    const page = searchParams.get(SearchParams.Page);
-    if (page && page === String(DEFAULT_PAGE)) {
-      changePage(DEFAULT_PAGE);
-    }
-  }, [searched, changePage, searchParams]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        localStorage.setItem(localStorageKeys.searched, searched);
-        setApiData((prev) => ({
-          ...prev,
-          status: 'pending',
-        }));
-
-        const query = [
-          ...(searched ? [`search=${searched}`] : []),
-          `page=${page}`,
-        ].join('&');
-
-        const data: IApiData = await fetchApi(`${apiURL}?${query}`);
-
-        setApiData({
-          status: 'ok',
-          statusCode: 200,
-          count: data.count,
-          next: data.next,
-          previous: data.previous,
-          results: data.results,
-        });
-      } catch (err) {
-        console.error(err);
-        const statusCode =
-          typeof err === 'object' && err !== null && 'status' in err
-            ? (err as { status: number }).status
-            : 500;
-
-        setApiData({
-          ...initialData,
-          status: 'error',
-          statusCode,
-        });
+    localStorage.setItem(localStorageKeys.searched, searched);
+    if (oldSearched.current !== searched) {
+      oldSearched.current = searched;
+      if (page !== String(DEFAULT_PAGE)) {
+        changePage(String(DEFAULT_PAGE));
+        return;
       }
-    })();
-  }, [searched, page]);
+    }
+    if (page) {
+      fetchPeople();
+    }
+  }, [fetchPeople, searched, page]);
 
   useEffect(() => {
     const initialValue = handleLocalStorage(localStorageKeys.searched, '');
@@ -128,7 +142,10 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
           }}
         />
         <hr />
-        <Main />
+        <div className="main-box-container">
+          <Main />
+          <Outlet />
+        </div>
       </div>
     </MainContext.Provider>
   );

@@ -1,7 +1,10 @@
 import { act, cleanup, render, screen, within } from '@testing-library/react';
+import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, Mock, vi } from 'vitest';
 import MainPage from '../pages/MainPage';
+
+vi.mock('axios');
 
 describe('Results/CardList Component Tests', () => {
   const clearApp = () => {
@@ -36,15 +39,7 @@ describe('Results/CardList Component Tests', () => {
         ],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       render(
@@ -65,15 +60,7 @@ describe('Results/CardList Component Tests', () => {
         results: [],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       render(
@@ -86,23 +73,28 @@ describe('Results/CardList Component Tests', () => {
     });
 
     test('Shows loading state while fetching data', async () => {
-      const promise = Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ count: 0, results: [] }),
+      let resolvePromise: (value: unknown) => void;
+
+      // Create a manual promise to control timing
+      const promise = new Promise((resolve) => {
+        resolvePromise = resolve;
       });
 
-      vi.stubGlobal('fetch', vi.fn(() => promise) as unknown);
+      (axios.get as unknown as Mock).mockReturnValue(promise);
 
-      clearApp();
       render(
         <BrowserRouter>
           <MainPage />
         </BrowserRouter>
       );
 
+      // Expect loading UI while promise is unresolved
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
-      await promise; // let the fetch finish
+      // Now resolve the promise to simulate API completion
+      await act(async () => {
+        resolvePromise({ data: { count: 0, results: [] } });
+      });
     });
   });
 
@@ -115,15 +107,7 @@ describe('Results/CardList Component Tests', () => {
         results: [{ name: 'Yoda', height: '66', created: '2024-01-01' }],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       render(
@@ -144,15 +128,7 @@ describe('Results/CardList Component Tests', () => {
         results: [{ name: undefined, height: undefined, created: undefined }],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       await act(async () => {
@@ -188,25 +164,27 @@ describe('Results/CardList Component Tests', () => {
     });
 
     test('Shows appropriate error for 4xx/5xx HTTP status codes', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: false,
-            status: 500,
-            json: () => Promise.resolve({}),
-          })
-        ) as unknown
-      );
+      const error = {
+        response: {
+          status: 500,
+          data: {},
+        },
+        message: 'Internal Server Error',
+      };
 
-      clearApp();
-      render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
-      );
+      (axios.get as unknown as Mock).mockRejectedValue(error);
 
-      expect(await screen.findByText(/the list is empty/i)).toBeInTheDocument(); // or general "error"
+      await act(async () => {
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
+      });
+
+      expect(
+        await screen.findByText(/There is an error! 500/i)
+      ).toBeInTheDocument();
     });
   });
 });

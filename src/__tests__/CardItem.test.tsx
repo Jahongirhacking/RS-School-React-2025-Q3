@@ -6,9 +6,12 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, Mock, vi } from 'vitest';
 import MainPage from '../pages/MainPage';
+
+vi.mock('axios');
 
 describe('Card/Item Component Tests', () => {
   const clearApp = () => {
@@ -33,15 +36,7 @@ describe('Card/Item Component Tests', () => {
         results: [{ name: 'Yoda', height: '66', created: '2024-01-01' }],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       render(<BrowserRouter><MainPage /></BrowserRouter>);
@@ -60,15 +55,7 @@ describe('Card/Item Component Tests', () => {
         results: [{ name: undefined, height: undefined, created: undefined }],
       };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() =>
-          Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockData),
-          })
-        ) as unknown
-      );
+      (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
       render(<BrowserRouter><MainPage /></BrowserRouter>);

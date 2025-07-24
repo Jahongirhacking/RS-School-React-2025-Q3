@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable prettier/prettier */
 import { act, cleanup, render, screen } from '@testing-library/react';
+import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { afterEach, describe, vi } from 'vitest';
+import { afterEach, describe, Mock, vi } from 'vitest';
 import MainPage from '../pages/MainPage';
+
+vi.mock('axios');
 
 describe('API Integration Tests', () => {
   const clearApp = () => {
@@ -31,14 +34,8 @@ describe('API Integration Tests', () => {
         ],
       };
 
-      const fetchMock = vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        })
-      );
 
-      vi.stubGlobal('fetch', fetchMock as unknown);
+      (axios.get as Mock).mockResolvedValue({ data: mockResponse });
 
       clearApp();
 
@@ -46,7 +43,6 @@ describe('API Integration Tests', () => {
         render(<BrowserRouter><MainPage /></BrowserRouter>);
       });
 
-      expect(fetchMock).toHaveBeenCalled();
       expect(await screen.findByText('Ahsoka Tano')).toBeInTheDocument();
     });
 
@@ -71,14 +67,14 @@ describe('API Integration Tests', () => {
     });
 
     test('Fetch throws network error', async () => {
-      const fetchMock = vi.fn(() => Promise.reject(new Error('Network error')));
-
-      vi.stubGlobal('fetch', fetchMock as unknown);
-
-      clearApp();
+      (axios.get as jest.Mock).mockRejectedValue(new Error('Network error'));
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(await screen.findByText(/there is an error/i)).toBeInTheDocument();

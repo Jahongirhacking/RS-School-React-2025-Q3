@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import ErrorButton from './ErrorButton';
 import Input from './Input';
 import SearchButton from './SearchButton';
@@ -8,31 +8,22 @@ interface NavbarProps {
   onBtnClick: () => void;
 }
 
-interface NavbarState {
-  hasError: boolean;
-}
+const Navbar = ({ setInputValue, onBtnClick }: NavbarProps) => {
+  const [hasError, setHasError] = useState(false);
 
-export default class Navbar extends Component<NavbarProps, NavbarState> {
-  constructor(props: NavbarProps) {
-    super(props);
-    this.state = {
-      hasError: false,
-    };
+  if (hasError) {
+    throw new Error('Oops, something went wrong!');
   }
 
-  render() {
-    if (this.state.hasError) {
-      throw new Error('Oops, something went wrong!');
-    }
+  return (
+    <nav className="nav">
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Input setInputValue={setInputValue} />
+        <SearchButton onBtnClick={onBtnClick} />
+        <ErrorButton makeError={() => setHasError(true)} />
+      </form>
+    </nav>
+  );
+};
 
-    return (
-      <nav className="nav">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Input setInputValue={this.props.setInputValue} />
-          <SearchButton onBtnClick={() => this.props.onBtnClick()} />
-          <ErrorButton makeError={() => this.setState({ hasError: true })} />
-        </form>
-      </nav>
-    );
-  }
-}
+export default Navbar;
