@@ -37,11 +37,6 @@ describe('Loading Component Tests', () => {
 
       // Expect loading indicator to be present before data loads
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
-
-      // Wait for fetch to complete and loading indicator to disappear
-      await waitFor(() =>
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
-      );
     });
 
     test('Does not show loading indicator after fetch', async () => {
