@@ -1,9 +1,46 @@
-@import "./normalize.scss";
+@import './normalize.scss';
 
 * {
   color: #fff;
   background-color: #000;
   border-color: #ddd;
+}
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  max-height: 100dvh;
+  height: 100dvh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+
+  .layout-navbar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 8px;
+    background-color: #222;
+    border-bottom: 1px solid #333;
+
+    a {
+      background-color: transparent;
+
+      &.active {
+        color: aqua;
+      }
+    }
+  }
+
+  .layout-body {
+    flex: 1;
+  }
+
+  .footer {
+    background-color: #222;
+    border-top: 1px solid #333;
+    text-align: center;
+    padding: 3px;
+  }
 }
 
 .container {
@@ -41,34 +78,131 @@
     }
   }
 
-  .main {
-    padding: 20px 10px;
+  .main-box-container {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-height: calc(100dvh - 80px);
-    min-height: calc(100dvh - 80px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    background-image: url("/background.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    width: 100%;
+    height: calc(100dvh - 130px);
 
-    h3 {
-      background-color: transparent;
+    .person-details {
+      flex: 1;
+      max-width: 300px;
+      padding: 10px 12px;
+
+      .details-title {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+          cursor: pointer;
+          padding: 5px;
+          border: none;
+          background-color: #ddd;
+          color: #000;
+        }
+      }
+
+      .details-body {
+        margin-top: 18px;
+
+        p {
+          margin-bottom: 8px;
+        }
+      }
     }
 
-    .card-container {
+    .main {
+      flex: 3;
+      padding: 20px 10px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      background-color: transparent;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      background-image: url('/background.jpg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
 
-      .card {
-        padding: 15px;
-        border: 2px solid #ddd;
-        border-radius: 4px;
+      h3 {
+        background-color: transparent;
+      }
+
+      .card-container {
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: center;
+
+        .card-box {
+          width: 100%;
+        }
+
+        .pagination {
+          .controls {
+            display: flex;
+            gap: 12px;
+            padding: 10px 18px;
+            align-items: center;
+          }
+
+          button {
+            cursor: pointer;
+            padding: 4px 8px;
+            border: none;
+            background-color: #ddd;
+            color: #000;
+          }
+        }
+
+        .card-box {
+          background-color: transparent;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .card {
+          padding: 15px;
+          border: 2px solid #ddd;
+          border-radius: 4px;
+
+          @media screen and (max-width: 400px) {
+            width: 100%;
+          }
+          @media (min-width: 401px) and (max-width: 800px) {
+            width: calc(50% - 5px);
+          }
+          @media (min-width: 801px) and (max-width: 1200px) {
+            width: calc(33% - 5px);
+          }
+          @media (min-width: 1201px) and (max-width: 1600px) {
+            width: calc(25% - 10px);
+          }
+          @media (min-width: 1601px) {
+            width: calc(20% - 10px);
+          }
+
+          h4 {
+            margin-bottom: 12px;
+          }
+
+          p {
+            margin-bottom: 6px;
+          }
+
+          .card-btn {
+            background-color: #ddd;
+            color: #000;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            cursor: pointer;
+          }
+        }
       }
     }
   }
