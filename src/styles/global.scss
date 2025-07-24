@@ -6,6 +6,43 @@
   border-color: #ddd;
 }
 
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  max-height: 100dvh;
+  height: 100dvh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+
+  .layout-navbar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 8px;
+    background-color: #222;
+    border-bottom: 1px solid #333;
+
+    a {
+      background-color: transparent;
+
+      &.active {
+        color: aqua;
+      }
+    }
+  }
+
+  .layout-body {
+    flex: 1;
+  }
+
+  .footer {
+    background-color: #222;
+    border-top: 1px solid #333;
+    text-align: center;
+    padding: 3px;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -44,6 +81,7 @@
   .main-box-container {
     display: flex;
     width: 100%;
+    height: calc(100dvh - 130px);
 
     .person-details {
       flex: 1;
@@ -80,8 +118,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      max-height: calc(100dvh - 80px);
-      min-height: calc(100dvh - 80px);
       overflow-y: auto;
       scrollbar-width: thin;
       background-image: url('/background.jpg');
