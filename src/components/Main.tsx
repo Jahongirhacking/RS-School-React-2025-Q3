@@ -1,36 +1,43 @@
-import { Component } from 'react';
-import IPerson from '../types/IPerson';
+import { useContext } from 'react';
+import { MainContext, MainProps } from '../pages/mainContext';
+import Pagination from './Pagination';
+import PersonCard from './PersonCard';
 
-interface MainProps {
-  items: IPerson[];
-  searched: string;
-  status: 'ok' | 'pending' | 'error';
-}
+const Main = () => {
+  const context = useContext(MainContext);
+  const { searched, apiData } = context ?? ({} as MainProps);
 
-export default class Main extends Component<MainProps> {
-  render() {
-    return (
-      <main className="main">
-        <h3>Searched: {this.props.searched}</h3>
-        <div className="card-container">
-          {this.props.status === 'pending' && 'Loading...'}
-          {this.props.status === 'error' && 'There is an error!'}
-          {this.props.status === 'ok' && (
-            <>
-              {this?.props.items?.length
-                ? this.props?.items?.map((item) => (
-                    <div key={item.created} className="card">
-                      <h4 className="person-name">{item.name}</h4>
-                      <p>
-                        Height: <b>{item.height}</b>
-                      </p>
-                    </div>
-                  ))
-                : 'The list is empty'}
-            </>
-          )}
-        </div>
-      </main>
-    );
-  }
-}
+  return (
+    <main className="main">
+      <h3>Searched: {searched}</h3>
+      <div className="card-container">
+        {apiData?.status === 'pending' && (
+          <span aria-label="loading">Loading...</span>
+        )}
+
+        {apiData?.status === 'error' && (
+          <span>There is an error! {apiData?.statusCode}</span>
+        )}
+
+        {apiData?.status === 'ok' && (
+          <>
+            {apiData?.results?.length ? (
+              <>
+                <div className="card-box">
+                  {apiData?.results?.map((item, index) => (
+                    <PersonCard key={item.created || index} person={item} />
+                  ))}
+                </div>
+                <Pagination />
+              </>
+            ) : (
+              'The list is empty'
+            )}
+          </>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export default Main;
