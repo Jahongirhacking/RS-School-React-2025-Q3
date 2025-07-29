@@ -14,9 +14,9 @@ interface MainPageProps {
 }
 
 export interface IApiData {
-  status: 'ok' | 'pending' | 'error';
-  count: number;
-  statusCode: number;
+  status?: 'ok' | 'pending' | 'error';
+  count?: number;
+  statusCode?: number;
   next: string | null;
   previous: string | null;
   results: IPerson[];

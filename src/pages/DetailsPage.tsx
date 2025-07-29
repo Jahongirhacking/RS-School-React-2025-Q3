@@ -37,7 +37,7 @@ const DetailsPage = () => {
   };
 
   return (
-    <div className="person-details">
+    <div className="person-details" data-testid="person-details">
       <div className="details-title">
         <h3>Details</h3>
         <button onClick={handleClose}>Close</button>
