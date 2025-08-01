@@ -18,7 +18,11 @@ describe('Main App Component Tests', () => {
   beforeEach(async () => {
     clearApp();
     await act(async () => {
-      render(<BrowserRouter><MainPage /></BrowserRouter>);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
     });
   });
 
@@ -41,7 +45,11 @@ describe('Main App Component Tests', () => {
       (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(axios.get).toHaveBeenCalledTimes(2);
@@ -153,7 +161,11 @@ describe('Main App Component Tests', () => {
       (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();
@@ -212,7 +224,11 @@ describe('Main App Component Tests', () => {
       (axios.get as Mock).mockResolvedValue({ data: mockResponse });
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();
@@ -226,7 +242,6 @@ describe('Main App Component Tests', () => {
           }),
         })
       );
-
     });
   });
 });

@@ -5,7 +5,7 @@ import { SearchParams } from '../utils/config';
 
 const Pagination = () => {
   const context = useContext(MainContext);
-  const { apiData } = context ?? ({} as MainProps);
+  const { charactersData } = context ?? ({} as MainProps);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChangePage = (step: number) => {
@@ -20,11 +20,11 @@ const Pagination = () => {
   return (
     <div className="pagination">
       <div className="controls">
-        {apiData?.previous && (
+        {charactersData?.previous && (
           <button onClick={() => handleChangePage(-1)}>Prev</button>
         )}
         <span>Page {searchParams.get(SearchParams.Page)}</span>
-        {apiData?.next && (
+        {charactersData?.next && (
           <button onClick={() => handleChangePage(1)}>Next</button>
         )}
       </div>

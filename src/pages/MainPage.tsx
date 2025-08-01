@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import Main from '../components/Main';
 import Navbar from '../components/Navbar';
+import { useGetCharactersQuery } from '../services/characters';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
 import handleLocalStorage from '../utils/handleLocalStorage';
@@ -22,16 +22,6 @@ export interface IApiData {
   results: IPerson[];
 }
 
-const initialData: IApiData = {
-  status: 'ok',
-  count: 0,
-  next: null,
-  previous: null,
-  results: [],
-  statusCode: 200,
-};
-
-const apiURL = 'https://swapi.py4e.com/api/people';
 const DEFAULT_PAGE = 1;
 
 const MainPage = ({ onBtnClick }: MainPageProps) => {
@@ -40,45 +30,17 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
     localStorage.getItem(localStorageKeys.searched) || ''
   );
   const [searchParams, setSearchParams] = useSearchParams();
-  const [apiData, setApiData] = useState<IApiData>(initialData);
   const page = searchParams.get(SearchParams.Page);
   const oldSearched = useRef(searched);
-
-  const fetchPeople = useCallback(async () => {
-    try {
-      setApiData((prev) => ({
-        ...prev,
-        status: 'pending',
-      }));
-
-      const data: IApiData = (
-        await axios.get(`${apiURL}`, {
-          params: {
-            search: searched || undefined,
-            page,
-          },
-        })
-      )?.data;
-
-      setApiData({
-        ...data,
-        status: 'ok',
-        statusCode: 200,
-      });
-    } catch (err) {
-      console.error(err);
-      const statusCode =
-        typeof err === 'object' && err !== null && 'status' in err
-          ? (err as { status: number }).status
-          : 500;
-
-      setApiData({
-        ...initialData,
-        status: 'error',
-        statusCode,
-      });
-    }
-  }, [page, searched]);
+  const {
+    data: charactersData,
+    isFetching,
+    isError,
+    isSuccess,
+  } = useGetCharactersQuery({
+    page: page || undefined,
+    search: searched || undefined,
+  });
 
   const changePage = useCallback(
     (value: string) => {
@@ -114,10 +76,7 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
         return;
       }
     }
-    if (page) {
-      fetchPeople();
-    }
-  }, [fetchPeople, searched, page]);
+  }, [searched, page]);
 
   useEffect(() => {
     const initialValue = handleLocalStorage(localStorageKeys.searched, '');
@@ -126,7 +85,15 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
   }, []);
 
   return (
-    <MainContext.Provider value={{ apiData, searched }}>
+    <MainContext.Provider
+      value={{
+        charactersData,
+        searched,
+        isFetching,
+        isError,
+        isSuccess,
+      }}
+    >
       <div className="container">
         <Navbar
           setInputValue={(value: string) => {

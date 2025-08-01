@@ -12,12 +12,15 @@ const mockSearchParams = {
 
 // Mock context value
 const mockContext: MainProps = {
-  apiData: {
+  charactersData: {
     previous: null,
     next: null,
     results: [],
   },
   searched: '',
+  isError: false,
+  isSuccess: true,
+  isFetching: false,
 };
 
 // Mock react-router-dom
@@ -30,14 +33,8 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('Pagination Component', () => {
-  const mockSetSearchParams = vi.fn<
-    ReturnType<typeof useSearchParams>[1]
-  >();
-
   beforeEach(() => {
-    const mockSetSearchParams = vi.fn<
-      ReturnType<typeof useSearchParams>[1]
-    >();
+    const mockSetSearchParams = vi.fn<ReturnType<typeof useSearchParams>[1]>();
     vi.mocked(useSearchParams).mockReturnValue([
       new URLSearchParams({ [mockSearchParams.Page]: '1' }),
       mockSetSearchParams,
@@ -62,12 +59,15 @@ describe('Pagination Component', () => {
 
   it('renders Previous button when previous page exists', () => {
     const contextWithPrev: MainProps = {
-      apiData: {
+      charactersData: {
         previous: 'http://api.example.com?page=1',
         next: null,
         results: [],
       },
       searched: '',
+      isError: false,
+      isSuccess: true,
+      isFetching: false,
     };
 
     render(
@@ -84,12 +84,15 @@ describe('Pagination Component', () => {
 
   it('renders Next button when next page exists', () => {
     const contextWithNext: MainProps = {
-      apiData: {
+      charactersData: {
         previous: null,
         next: 'http://api.example.com?page=2',
         results: [],
       },
       searched: '',
+      isError: false,
+      isSuccess: true,
+      isFetching: false,
     };
 
     render(

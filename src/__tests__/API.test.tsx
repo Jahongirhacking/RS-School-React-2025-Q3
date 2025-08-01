@@ -34,13 +34,16 @@ describe('API Integration Tests', () => {
         ],
       };
 
-
       (axios.get as Mock).mockResolvedValue({ data: mockResponse });
 
       clearApp();
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(await screen.findByText('Ahsoka Tano')).toBeInTheDocument();
@@ -60,7 +63,11 @@ describe('API Integration Tests', () => {
       clearApp();
 
       await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
+        render(
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        );
       });
 
       expect(await screen.findByText(/the list is empty/i)).toBeInTheDocument(); // or /error/i

@@ -20,7 +20,11 @@ describe('Card/Item Component Tests', () => {
   };
 
   beforeEach(() => {
-    render(<BrowserRouter><MainPage /></BrowserRouter>);
+    render(
+      <BrowserRouter>
+        <MainPage />
+      </BrowserRouter>
+    );
   });
 
   afterEach(() => {
@@ -39,7 +43,11 @@ describe('Card/Item Component Tests', () => {
       (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
-      render(<BrowserRouter><MainPage /></BrowserRouter>);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       const card = await screen.findByTestId('person-card');
       expect(card).toBeInTheDocument();
@@ -58,7 +66,11 @@ describe('Card/Item Component Tests', () => {
       (axios.get as Mock).mockResolvedValue({ data: mockData });
 
       clearApp();
-      render(<BrowserRouter><MainPage /></BrowserRouter>);
+      render(
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      );
 
       await waitFor(() => {
         expect(

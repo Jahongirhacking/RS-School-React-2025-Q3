@@ -34,11 +34,17 @@ describe('Rendering Card Details:', () => {
   });
 
   test('shows person card and updates URL search params when button is clicked', async () => {
-    expect(screen.getByTestId('location-display')).not.toHaveTextContent(/details/i);
+    expect(screen.getByTestId('location-display')).not.toHaveTextContent(
+      /details/i
+    );
     // Find and click the first "More info" button
-    const button = (await screen.findAllByRole('button', { name: /more info/i }))[0];
+    const button = (
+      await screen.findAllByRole('button', { name: /more info/i })
+    )[0];
     await user.click(button);
     // Assert that URL was updated
-    expect(screen.getByTestId('location-display')).toHaveTextContent(/details=1/i);
+    expect(screen.getByTestId('location-display')).toHaveTextContent(
+      /details=1/i
+    );
   });
 });
