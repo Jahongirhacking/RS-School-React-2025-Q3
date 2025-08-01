@@ -1,4 +1,5 @@
 import { IApiData } from '../../pages/MainPage';
+import IPerson from '../../types/IPerson';
 import { api } from '../api';
 
 export const charactersApi = api.injectEndpoints({
@@ -9,7 +10,12 @@ export const charactersApi = api.injectEndpoints({
         params,
       }),
     }),
+
+    getCharacterDetail: build.query<IPerson, { id: string }>({
+      query: ({ id }) => `https://swapi.py4e.com/api/people/${id}`,
+    }),
   }),
 });
 
-export const { useGetCharactersQuery } = charactersApi;
+export const { useGetCharactersQuery, useGetCharacterDetailQuery } =
+  charactersApi;
