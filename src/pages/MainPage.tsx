@@ -17,8 +17,8 @@ export interface IApiData {
   status?: 'ok' | 'pending' | 'error';
   count?: number;
   statusCode?: number;
-  next: string | null;
-  previous: string | null;
+  next?: string | null;
+  previous?: string | null;
   results: IPerson[];
 }
 

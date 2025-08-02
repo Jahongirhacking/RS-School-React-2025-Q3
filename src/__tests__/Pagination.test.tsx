@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { BrowserRouter, useSearchParams } from 'react-router-dom';
 import { vi } from 'vitest';
 import Pagination from '../components/Pagination'; // Adjust path to your Pagination component
@@ -82,7 +83,7 @@ describe('Pagination Component', () => {
     expect(screen.queryByText('Next')).not.toBeInTheDocument();
   });
 
-  it('renders Next button when next page exists', () => {
+  it('renders Next button when next page exists', async () => {
     const contextWithNext: MainProps = {
       charactersData: {
         previous: null,
@@ -103,7 +104,9 @@ describe('Pagination Component', () => {
       </BrowserRouter>
     );
 
+    const user = userEvent.setup();
     expect(screen.getByText('Next')).toBeInTheDocument();
     expect(screen.queryByText('Prev')).not.toBeInTheDocument();
+    await user.click(screen.getByText('Next'));
   });
 });

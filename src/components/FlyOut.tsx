@@ -37,7 +37,7 @@ const FlyOut = () => {
   };
 
   return (
-    <div className="flyout-element">
+    <div className="flyout-element" data-testid="flyout">
       <span>{`${selected.length} ${selected?.length > 1 ? 'items are' : 'item is'} selected`}</span>
       <button
         onClick={() => {

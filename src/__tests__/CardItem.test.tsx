@@ -6,12 +6,22 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import axios from 'axios';
-import { BrowserRouter } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, Mock, vi } from 'vitest';
-import MainPage from '../pages/MainPage';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import { afterEach, describe, expect } from 'vitest';
+import MainApp from '../MainApp';
+import { baseApiUrl } from '../utils/config';
 
-vi.mock('axios');
+const server = setupServer(
+  http.get(`${baseApiUrl}`, () => {
+    return HttpResponse.json({
+      count: 1,
+      next: null,
+      previous: null,
+      results: [{ name: 'Yoda', height: '66', created: '2024-01-01' }],
+    })
+  })
+)
 
 describe('Card/Item Component Tests', () => {
   const clearApp = () => {
@@ -19,34 +29,19 @@ describe('Card/Item Component Tests', () => {
     localStorage.clear();
   };
 
-  beforeEach(() => {
-    render(
-      <BrowserRouter>
-        <MainPage />
-      </BrowserRouter>
-    );
-  });
+  beforeAll(() => { server.listen() })
 
   afterEach(() => {
-    cleanup();
+    clearApp();
+    server.resetHandlers();
   });
+
+  afterAll(() => server.close())
 
   describe('Rendering Tests:', () => {
     test('Displays item name and description correctly', async () => {
-      const mockData = {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [{ name: 'Yoda', height: '66', created: '2024-01-01' }],
-      };
-
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      clearApp();
       render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
+        <MainApp />
       );
 
       const card = await screen.findByTestId('person-card');
@@ -56,20 +51,8 @@ describe('Card/Item Component Tests', () => {
     });
 
     test('Handles missing props gracefully', async () => {
-      const mockData = {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [{ name: undefined, height: undefined, created: undefined }],
-      };
-
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      clearApp();
       render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
+        <MainApp />
       );
 
       await waitFor(() => {

@@ -1,23 +1,13 @@
-import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.tsx';
-import ErrorBoundary from './components/ErrorBoundary.tsx';
-import { store } from './store/store.ts';
+import MainApp from './MainApp';
 import './styles/global.scss';
-import { ThemeProvider } from './ThemeContext.tsx';
+import { createAppRoot } from './utils/appRoot';
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Provider store={store}>
-          <ThemeProvider>
-            <App />
-          </ThemeProvider>
-        </Provider>
-      </BrowserRouter>
-    </ErrorBoundary>
-  );
+export function renderApp() {
+  const rootElement = document.getElementById('root');
+  if (rootElement) {
+    const root = createAppRoot(rootElement);
+    root.render(<MainApp />);
+  }
 }
+
+renderApp();

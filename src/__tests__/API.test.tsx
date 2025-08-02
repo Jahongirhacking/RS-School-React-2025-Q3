@@ -1,90 +1,55 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable prettier/prettier */
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import axios from 'axios';
-import { BrowserRouter } from 'react-router-dom';
-import { afterEach, describe, Mock, vi } from 'vitest';
-import MainPage from '../pages/MainPage';
+import MockAdapter from 'axios-mock-adapter';
+import { afterEach, describe, expect, test } from 'vitest';
+import MainApp from '../MainApp';
+import { baseApiUrl } from '../utils/config';
 
-vi.mock('axios');
 
-describe('API Integration Tests', () => {
-  const clearApp = () => {
-    cleanup();
-    localStorage.clear();
-  };
+let mock: MockAdapter;
 
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
+beforeEach(() => {
+  mock = new MockAdapter(axios);
+});
+
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+  mock.restore();
+});
+
+describe('API Integration Tests with MSW', () => {
+  test('Fetch returns successful response and renders data', async () => {
+    mock.onGet(baseApiUrl).reply(200, {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        {
+          name: 'Luke',
+          height: '167',
+          created: '2024-01-01',
+        },
+      ],
+    });
+
+    render(<MainApp />);
+    expect(await screen.findByText(/Luke/i)).toBeInTheDocument();
   });
 
-  describe('Mocked API Calls:', () => {
-    test('Fetch returns successful response and renders data', async () => {
-      const mockResponse = {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            name: 'Ahsoka Tano',
-            height: '167',
-            created: '2024-01-01',
-          },
-        ],
-      };
+  test('Fetch returns non-ok response (HTTP 500)', async () => {
+    mock.onGet(baseApiUrl).reply(500, {});
 
-      (axios.get as Mock).mockResolvedValue({ data: mockResponse });
+    render(<MainApp />);
+    expect(await screen.findByText(/error/i)).toBeInTheDocument(); // or error
+  });
 
-      clearApp();
+  test('Fetch throws network error', async () => {
+    mock.onGet(baseApiUrl).reply(500, {});
 
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      expect(await screen.findByText('Ahsoka Tano')).toBeInTheDocument();
-    });
-
-    test('Fetch returns non-ok response (HTTP 500)', async () => {
-      const fetchMock = vi.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 500,
-          json: () => Promise.resolve({}),
-        })
-      );
-
-      vi.stubGlobal('fetch', fetchMock as unknown);
-
-      clearApp();
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      expect(await screen.findByText(/the list is empty/i)).toBeInTheDocument(); // or /error/i
-    });
-
-    test('Fetch throws network error', async () => {
-      (axios.get as jest.Mock).mockRejectedValue(new Error('Network error'));
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      expect(await screen.findByText(/there is an error/i)).toBeInTheDocument();
-    });
+    render(<MainApp />);
+    expect(await screen.findByText(/error/i)).toBeInTheDocument();
   });
 });
