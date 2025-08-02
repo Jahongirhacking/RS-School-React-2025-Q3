@@ -12,9 +12,7 @@ describe('Rendering Card Details:', () => {
     user = userEvent.setup();
 
     await act(async () => {
-      render(
-        <MainApp />
-      );
+      render(<MainApp />);
     });
   });
 
@@ -43,8 +41,10 @@ describe('Rendering Card Details:', () => {
     await user.click(button);
     const details = screen.getByTestId('person-details');
     expect(await within(details).findByText(/name/i));
-    const closeBtn = await within(details).findByRole('button', { name: /close/i });
+    const closeBtn = await within(details).findByRole('button', {
+      name: /close/i,
+    });
     await user.click(closeBtn);
     expect(screen.queryByTestId('person-details')).not.toBeInTheDocument();
-  })
+  });
 });

@@ -6,17 +6,17 @@ import { describe, test } from 'vitest';
 import MainApp from '../MainApp';
 
 describe('About page', () => {
-    let user: UserEvent;
+  let user: UserEvent;
 
-    beforeEach(() => {
-        user = userEvent.setup();
-        render(<MainApp />)
-    })
-    test("About page details", async () => {
-        const link = screen.getByRole('link', { name: /about/i });
-        await user.click(link);
+  beforeEach(() => {
+    user = userEvent.setup();
+    render(<MainApp />);
+  });
+  test('About page details', async () => {
+    const link = screen.getByRole('link', { name: /about/i });
+    await user.click(link);
 
-        expect(screen.getByText(/about author information/i));
-        expect(screen.getByRole('link', { name: /RS School React Course/i }))
-    })
+    expect(screen.getByText(/about author information/i));
+    expect(screen.getByRole('link', { name: /RS School React Course/i }));
+  });
 });

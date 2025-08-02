@@ -19,9 +19,9 @@ const server = setupServer(
       next: null,
       previous: null,
       results: [{ name: 'Yoda', height: '66', created: '2024-01-01' }],
-    })
+    });
   })
-)
+);
 
 describe('Card/Item Component Tests', () => {
   const clearApp = () => {
@@ -29,20 +29,20 @@ describe('Card/Item Component Tests', () => {
     localStorage.clear();
   };
 
-  beforeAll(() => { server.listen() })
+  beforeAll(() => {
+    server.listen();
+  });
 
   afterEach(() => {
     clearApp();
     server.resetHandlers();
   });
 
-  afterAll(() => server.close())
+  afterAll(() => server.close());
 
   describe('Rendering Tests:', () => {
     test('Displays item name and description correctly', async () => {
-      render(
-        <MainApp />
-      );
+      render(<MainApp />);
 
       const card = await screen.findByTestId('person-card');
       expect(card).toBeInTheDocument();
@@ -51,9 +51,7 @@ describe('Card/Item Component Tests', () => {
     });
 
     test('Handles missing props gracefully', async () => {
-      render(
-        <MainApp />
-      );
+      render(<MainApp />);
 
       await waitFor(() => {
         expect(

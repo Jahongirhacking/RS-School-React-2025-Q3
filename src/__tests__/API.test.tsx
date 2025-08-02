@@ -7,7 +7,6 @@ import { afterEach, describe, expect, test } from 'vitest';
 import MainApp from '../MainApp';
 import { baseApiUrl } from '../utils/config';
 
-
 let mock: MockAdapter;
 
 beforeEach(() => {

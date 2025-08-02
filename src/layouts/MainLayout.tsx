@@ -15,7 +15,7 @@ const MainLayout = () => {
             <input
               type="radio"
               checked={themeProps?.theme === 'light'}
-              onChange={() => { }}
+              onChange={() => {}}
               style={{ marginRight: 8 }}
             />
             {themeProps?.theme}

@@ -28,9 +28,13 @@ describe('Main App Component Tests', () => {
             next: null,
             previous: null,
             results: [
-              { name: 'Anakin Skywalker', height: '188', created: '2024-01-01' },
+              {
+                name: 'Anakin Skywalker',
+                height: '188',
+                created: '2024-01-01',
+              },
             ],
-          })
+          });
         })
       );
 
@@ -106,10 +110,8 @@ describe('Main App Component Tests', () => {
             count: 1,
             next: null,
             previous: null,
-            results: [
-              { name: 'Anakin', height: '182', created: '2024-01-01' },
-            ],
-          })
+            results: [{ name: 'Anakin', height: '182', created: '2024-01-01' }],
+          });
         })
       );
       render(<MainApp />);
@@ -118,9 +120,7 @@ describe('Main App Component Tests', () => {
 
     test('Handles API error responses', async () => {
       server.use(
-        http.get(baseApiUrl, () =>
-          HttpResponse.json({}, { status: 500 })
-        )
+        http.get(baseApiUrl, () => HttpResponse.json({}, { status: 500 }))
       );
 
       render(<MainApp />);

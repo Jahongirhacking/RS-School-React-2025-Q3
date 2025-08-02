@@ -6,34 +6,38 @@ import { describe, test } from 'vitest';
 import MainApp from '../MainApp';
 
 describe('FlyOut element:', () => {
-    let user: UserEvent;
+  let user: UserEvent;
 
-    beforeEach(() => {
-        user = userEvent.setup();
-        render(<MainApp />)
-    })
+  beforeEach(() => {
+    user = userEvent.setup();
+    render(<MainApp />);
+  });
 
-    afterEach(() => {
-        cleanup();
-    })
+  afterEach(() => {
+    cleanup();
+  });
 
-    test("test flyout element func", async () => {
-        const card = (await screen.findAllByTestId('person-card'))[0];
-        expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
-        await user.click(card);
-        const flyout = await screen.findByTestId('flyout');
-        expect(flyout).toBeInTheDocument();
-        expect(within(flyout).getByText(/1 item is selected/i)).toBeInTheDocument();
-    })
+  test('test flyout element func', async () => {
+    const card = (await screen.findAllByTestId('person-card'))[0];
+    expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
+    await user.click(card);
+    const flyout = await screen.findByTestId('flyout');
+    expect(flyout).toBeInTheDocument();
+    expect(within(flyout).getByText(/1 item is selected/i)).toBeInTheDocument();
+  });
 
-    test("test flyout unselect", async () => {
-        const flyout = await screen.findByTestId('flyout');
-        expect(flyout).toBeInTheDocument();
-        const unselectBtn = within(flyout).getByRole('button', { name: /unselect/i });
-        const downloadBtn = within(flyout).getByRole('button', { name: /download/i });
-        expect(downloadBtn).toBeInTheDocument();
-        // await user.click(downloadBtn);
-        await user.click(unselectBtn);
-        expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
-    })
+  test('test flyout unselect', async () => {
+    const flyout = await screen.findByTestId('flyout');
+    expect(flyout).toBeInTheDocument();
+    const unselectBtn = within(flyout).getByRole('button', {
+      name: /unselect/i,
+    });
+    const downloadBtn = within(flyout).getByRole('button', {
+      name: /download/i,
+    });
+    expect(downloadBtn).toBeInTheDocument();
+    // await user.click(downloadBtn);
+    await user.click(unselectBtn);
+    expect(screen.queryByTestId('flyout')).not.toBeInTheDocument();
+  });
 });

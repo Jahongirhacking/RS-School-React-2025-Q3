@@ -5,11 +5,10 @@ import { describe, test } from 'vitest';
 import NotFoundPage from '../pages/NotFoundPage';
 
 describe('NotFound page', () => {
-
-    beforeEach(() => {
-        render(<NotFoundPage />)
-    })
-    test("Not found page details", async () => {
-        expect(screen.getByText(/not found 404/i)).toBeInTheDocument();
-    })
+  beforeEach(() => {
+    render(<NotFoundPage />);
+  });
+  test('Not found page details', async () => {
+    expect(screen.getByText(/not found 404/i)).toBeInTheDocument();
+  });
 });

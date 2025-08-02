@@ -32,9 +32,7 @@ describe('Loading Component Tests', () => {
       vi.stubGlobal('fetch', vi.fn(delayedFetch) as unknown);
 
       clearApp();
-      render(
-        <MainApp />
-      );
+      render(<MainApp />);
 
       // Expect loading indicator to be present before data loads
       expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -86,9 +84,7 @@ describe('Loading Component Tests', () => {
       vi.stubGlobal('fetch', vi.fn(delayedFetch) as unknown);
 
       clearApp();
-      render(
-        <MainApp />
-      );
+      render(<MainApp />);
 
       // Expect ARIA role or label to exist (depending on your implementation)
       const loadingElement = screen.getByLabelText(/loading/i);
