@@ -1,10 +1,13 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import Input from '../components/Input';
 import SearchButton from '../components/SearchButton';
+import MainApp from '../MainApp';
 import MainPage from '../pages/MainPage';
+import { store } from '../store/store';
 import localStorageKeys from '../utils/localStorageKeys';
 
 describe('Search test', () => {
@@ -70,11 +73,7 @@ describe('Search test', () => {
 
     test('Saves search term to localStorage when search button is clicked', async () => {
       clearApp();
-      render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
-      );
+      render(<MainApp />);
       const value = 'Vader';
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText(
@@ -88,11 +87,7 @@ describe('Search test', () => {
 
     test('Trims whitespace from search input before saving', async () => {
       clearApp();
-      render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
-      );
+      render(<MainApp />);
       const value = '  Vader  ';
       const user = userEvent.setup();
       const input = screen.getByPlaceholderText(
@@ -109,9 +104,11 @@ describe('Search test', () => {
     test('Triggers search callback with correct parameters', async () => {
       clearApp();
       render(
-        <BrowserRouter>
-          <MainPage onBtnClick={mockSearch} />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <MainPage onBtnClick={mockSearch} />
+          </BrowserRouter>
+        </Provider>
       );
       const value = 'hello';
       const user = userEvent.setup();
@@ -137,11 +134,7 @@ describe('Search test', () => {
     test('Overwrites existing localStorage value when new search is performed', async () => {
       clearApp();
       localStorage.setItem(localStorageKeys.searched, 'oldterm');
-      render(
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
-      );
+      render(<MainApp />);
 
       const user = userEvent.setup();
       const input = screen.getByDisplayValue('oldterm') as HTMLInputElement;

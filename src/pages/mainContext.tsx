@@ -2,8 +2,11 @@ import { createContext } from 'react';
 import { IApiData } from './MainPage';
 
 export interface MainProps {
-  apiData: IApiData;
+  charactersData?: IApiData;
   searched: string;
+  isFetching: boolean;
+  isSuccess: boolean;
+  isError: boolean;
 }
 
 export const MainContext = createContext<MainProps | null>(null);

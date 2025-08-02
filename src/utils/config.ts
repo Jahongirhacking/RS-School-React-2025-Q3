@@ -3,3 +3,5 @@ export enum SearchParams {
   Details = 'details',
   Search = 'search',
 }
+
+export const baseApiUrl = 'https://swapi.py4e.com/api/people';
