@@ -6,6 +6,34 @@
   border-color: #ddd;
 }
 
+.app-container.light {
+  * {
+    color: #000000;
+    background-color: #ffffff;
+    border-color: #000000;
+  }
+
+  .layout-navbar {
+    background-color: #fff;
+
+    a.active {
+      color: blue;
+    }
+  }
+
+  .nav {
+    background-color: #ddd;
+  }
+
+  .footer {
+    background-color: #ddd;
+  }
+
+  .main > h3 {
+    color: #fff;
+  }
+}
+
 .main-layout {
   display: flex;
   flex-direction: column;
@@ -114,7 +142,7 @@
 
     .main {
       flex: 3;
-      padding: 20px 10px;
+      padding: 20px 10px 80px;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -124,6 +152,7 @@
       background-repeat: no-repeat;
       background-position: center;
       background-size: cover;
+      position: relative;
 
       h3 {
         background-color: transparent;
@@ -205,5 +234,24 @@
         }
       }
     }
+  }
+}
+
+.flyout-element {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  border: 1px solid #000;
+
+  button {
+    padding: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
   }
 }

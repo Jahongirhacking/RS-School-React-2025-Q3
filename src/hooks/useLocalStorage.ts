@@ -16,12 +16,10 @@ function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(readValue);
 
   // Update localStorage and state
-  const setValue = (value: T | ((val: T) => T)) => {
+  const setValue = (value: T) => {
     try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      localStorage.setItem(key, JSON.stringify(valueToStore));
+      setStoredValue(value);
+      localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.warn(`Error setting localStorage key "${key}":`, error);
     }
@@ -42,7 +40,7 @@ function useLocalStorage<T>(key: string, initialValue: T) {
     setStoredValue(readValue());
   }, [readValue]);
 
-  return [storedValue, setValue, remove] as const;
+  return { storedValue, setValue, remove } as const;
 }
 
 export default useLocalStorage;

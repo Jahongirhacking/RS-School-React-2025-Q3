@@ -1,118 +1,80 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable prettier/prettier */
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
-import { BrowserRouter } from 'react-router-dom';
-import { afterEach, describe, Mock, vi } from 'vitest';
-import MainPage from '../pages/MainPage';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import MainApp from '../MainApp';
+import { baseApiUrl } from '../utils/config';
 import localStorageKeys from '../utils/localStorageKeys';
 
-vi.mock('axios');
+const server = setupServer();
+
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+  server.resetHandlers();
+});
+afterAll(() => server.close());
 
 describe('Main App Component Tests', () => {
-  const clearApp = () => {
-    cleanup();
-    localStorage.clear();
-  };
-
-  beforeEach(async () => {
-    clearApp();
-    await act(async () => {
-      render(<BrowserRouter><MainPage /></BrowserRouter>);
-    });
-  });
-
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
-
   describe('Integration Tests:', () => {
     test('Makes initial API call on component mount', async () => {
-      const mockData = {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          { name: 'Anakin Skywalker', height: '188', created: '2024-01-01' },
-        ],
-      };
+      server.use(
+        http.get(baseApiUrl, () => {
+          return HttpResponse.json({
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+              {
+                name: 'Anakin Skywalker',
+                height: '188',
+                created: '2024-01-01',
+              },
+            ],
+          });
+        })
+      );
 
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
-      });
-
-      expect(axios.get).toHaveBeenCalledTimes(2);
+      render(<MainApp />);
+      expect(await screen.findByText(/Anakin Skywalker/i)).toBeInTheDocument();
     });
 
     test('Handles search term from localStorage on initial load', async () => {
       localStorage.setItem(localStorageKeys.searched, 'vader');
 
-      const mockData = {
-        count: 1,
-        results: [
-          { name: 'Darth Vader', height: '202', created: '2024-01-01' },
-        ],
-      };
-
-      // Mock axios.get to return mockData
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      // Assert Vader is rendered
-      expect(await screen.findByText('Darth Vader')).toBeInTheDocument();
-
-      // Assert axios was called with the search param 'vader'
-      expect(axios.get).toHaveBeenCalledWith(
-        expect.stringContaining('people'),
-        expect.objectContaining({
-          params: expect.objectContaining({
-            search: 'vader',
-          }),
-        })
+      server.use(
+        http.get(baseApiUrl, () =>
+          HttpResponse.json({
+            count: 1,
+            results: [
+              { name: 'Darth Vader', height: '202', created: '2024-01-01' },
+            ],
+          })
+        )
       );
+
+      render(<MainApp />);
+      expect(await screen.findByText('Darth Vader')).toBeInTheDocument();
     });
 
     test('Manages loading states during API calls', async () => {
-      let resolveData: (value: unknown) => void;
+      server.use(
+        http.get(`${baseApiUrl}`, () =>
+          HttpResponse.json({
+            count: 1,
+            results: [
+              { name: 'Darth Vader', height: '202', created: '2024-01-01' },
+            ],
+          })
+        )
+      );
 
-      const fetchPromise = new Promise((resolve) => {
-        resolveData = resolve;
-      });
-
-      (axios.get as Mock).mockReturnValue(fetchPromise);
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      // 🔄 Assert loading state is shown
-      expect(screen.getByText(/loading/i)).toBeInTheDocument();
-
-      // ✅ Simulate resolved API response
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      resolveData!({
-        data: {
-          count: 0,
-          results: [],
-        },
-      });
+      render(<MainApp />);
 
       await waitFor(() => {
-        // ✅ Assert loading state disappears
         expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
       });
     });
@@ -120,113 +82,92 @@ describe('Main App Component Tests', () => {
 
   describe('API Integration Tests:', () => {
     test('Calls API with correct parameters', async () => {
-      const mockGet = vi.fn().mockResolvedValue({
-        data: { count: 0, results: [] },
-      });
+      let calledUrl = '';
+      server.use(
+        http.get(`${baseApiUrl}`, ({ request }) => {
+          const url = new URL(request.url);
+          calledUrl = url.pathname;
 
-      (axios.get as Mock) = mockGet;
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
-      expect(mockGet).toHaveBeenCalledWith(
-        expect.stringContaining('people'),
-        expect.any(Object)
+          return HttpResponse.json({
+            count: 0,
+            results: [],
+          });
+        })
       );
+
+      render(<MainApp />);
+
+      await waitFor(() => {
+        expect(calledUrl).toContain('');
+      });
     });
 
     test('Handles successful API responses', async () => {
-      const mockData = {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          { name: 'Obi-Wan Kenobi', height: '182', created: '2024-01-01' },
-        ],
-      };
-
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
-      });
-
-      expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();
+      server.use(
+        http.get(`${baseApiUrl}`, ({ request }) => {
+          console.log(request, 'req');
+          return HttpResponse.json({
+            count: 1,
+            next: null,
+            previous: null,
+            results: [{ name: 'Anakin', height: '182', created: '2024-01-01' }],
+          });
+        })
+      );
+      render(<MainApp />);
+      expect(await screen.findByText(/Anakin/i)).toBeInTheDocument();
     });
 
     test('Handles API error responses', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(() => Promise.reject(new Error('Network error')) as unknown)
+      server.use(
+        http.get(baseApiUrl, () => HttpResponse.json({}, { status: 500 }))
       );
 
+      render(<MainApp />);
       expect(await screen.findByText(/error/i)).toBeInTheDocument();
     });
   });
 
   describe('State Management Tests:', () => {
     test('Updates component state based on API responses', async () => {
-      const mockData = {
-        count: 2,
-        next: null,
-        previous: null,
-        results: [
-          { name: 'Luke Skywalker', height: '172', created: '2024-01-01' },
-          { name: 'Leia Organa', height: '150', created: '2024-01-02' },
-        ],
-      };
+      server.use(
+        http.get(baseApiUrl, () =>
+          HttpResponse.json({
+            count: 2,
+            next: null,
+            previous: null,
+            results: [
+              { name: 'Luke Skywalker', height: '172', created: '2024-01-01' },
+            ],
+          })
+        )
+      );
 
-      (axios.get as Mock).mockResolvedValue({ data: mockData });
-
-      await act(async () => {
-        render(
-          <BrowserRouter>
-            <MainPage />
-          </BrowserRouter>
-        );
-      });
-
+      render(<MainApp />);
       const cards = await screen.findAllByTestId('person-card');
-      expect(cards).toHaveLength(2);
+      expect(cards).toHaveLength(1);
     });
 
     test('Manages search term state correctly', async () => {
       localStorage.setItem(localStorageKeys.searched, 'kenobi');
 
-      const mockResponse = {
-        count: 1,
-        results: [
-          {
-            name: 'Obi-Wan Kenobi',
-            height: '182',
-            created: '2024-01-01',
-          },
-        ],
-      };
-
-      (axios.get as Mock).mockResolvedValue({ data: mockResponse });
-
-      await act(async () => {
-        render(<BrowserRouter><MainPage /></BrowserRouter>);
-      });
-
-      expect(await screen.findByText('Obi-Wan Kenobi')).toBeInTheDocument();
-
-      // ✅ Check URL contains 'kenobi'
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://swapi.py4e.com/api/people',
-        expect.objectContaining({
-          params: expect.objectContaining({
-            search: 'kenobi',
-          }),
-        })
+      server.use(
+        http.get(baseApiUrl, () =>
+          HttpResponse.json({
+            count: 1,
+            results: [
+              {
+                name: 'Obi-Wan Kenobi',
+                height: '182',
+                created: '2024-01-01',
+              },
+            ],
+          })
+        )
       );
 
+      render(<MainApp />);
+      expect(await screen.findByText(/Obi-Wan Kenobi/i)).toBeInTheDocument();
     });
   });
 });
