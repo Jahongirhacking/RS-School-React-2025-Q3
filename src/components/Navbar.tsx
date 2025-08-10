@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ErrorButton from './ErrorButton';
 import Input from './Input';
 import SearchButton from './SearchButton';
+import RefetchButton from './RefetchButton';
 
 interface NavbarProps {
   setInputValue: (value: string) => void;
@@ -20,6 +21,7 @@ const Navbar = ({ setInputValue, onBtnClick }: NavbarProps) => {
       <form onSubmit={(e) => e.preventDefault()}>
         <Input setInputValue={setInputValue} />
         <SearchButton onBtnClick={onBtnClick} />
+        <RefetchButton />
         <ErrorButton makeError={() => setHasError(true)} />
       </form>
     </nav>

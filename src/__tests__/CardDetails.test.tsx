@@ -9,6 +9,7 @@ describe('Rendering Card Details:', () => {
 
   beforeEach(async () => {
     cleanup();
+    localStorage.clear();
     user = userEvent.setup();
 
     await act(async () => {

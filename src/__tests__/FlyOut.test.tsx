@@ -9,6 +9,7 @@ describe('FlyOut element:', () => {
   let user: UserEvent;
 
   beforeEach(() => {
+    cleanup();
     user = userEvent.setup();
     render(<MainApp />);
   });
@@ -27,7 +28,12 @@ describe('FlyOut element:', () => {
   });
 
   test('test flyout unselect', async () => {
-    const flyout = await screen.findByTestId('flyout');
+    const card = (await screen.findAllByTestId('person-card'))[2];
+    await user.click(card);
+    const flyout = screen.getByTestId('flyout');
+    expect(flyout).toBeInTheDocument();
+    expect(within(flyout).getByText(/selected/i)).toBeInTheDocument();
+
     expect(flyout).toBeInTheDocument();
     const unselectBtn = within(flyout).getByRole('button', {
       name: /unselect/i,

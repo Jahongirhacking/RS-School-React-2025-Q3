@@ -10,6 +10,7 @@ export const charactersApi = api.injectEndpoints({
         url: `${baseApiUrl}`,
         params,
       }),
+      providesTags: ['people'],
     }),
 
     getCharacterDetail: build.query<IPerson, { id: string }>({

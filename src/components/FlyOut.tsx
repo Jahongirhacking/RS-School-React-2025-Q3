@@ -13,7 +13,7 @@ const FlyOut = () => {
     const header = Object.keys(selected[0]);
 
     const csv = [
-      header.join(','), // header row
+      header.join(','),
       ...selected.map((row: IPerson) =>
         header
           .map((field) => {
@@ -27,13 +27,8 @@ const FlyOut = () => {
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${selected?.length}_items.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   };
 
   return (
