@@ -1,5 +1,5 @@
-import handleLocalStorage from '../utils/handleLocalStorage';
-import localStorageKeys from '../utils/localStorageKeys';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const DEFAULT_VALUE = '';
 
@@ -8,13 +8,12 @@ type Props = {
 };
 
 const Input = (props: Props) => {
+  const searched = useSelector((store: RootState) => store.characters.searched);
+
   return (
     <input
       type="text"
-      defaultValue={handleLocalStorage(
-        localStorageKeys.searched,
-        DEFAULT_VALUE
-      )}
+      defaultValue={searched || DEFAULT_VALUE}
       onChange={(e) => props.setInputValue(e?.target?.value)}
       placeholder="Enter name..."
     />

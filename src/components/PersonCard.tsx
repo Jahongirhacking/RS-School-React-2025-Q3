@@ -1,12 +1,15 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
 import { handleSelectPerson } from '../store/slices/charactersSlice';
 import { RootState } from '../store/store';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
 
 const PersonCard = ({ person }: { person: IPerson }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const dispatch = useDispatch();
   const id = person?.url?.split('/').slice(-2)?.join('');
   const { selected } = useSelector((store: RootState) => store.characters);
@@ -15,7 +18,7 @@ const PersonCard = ({ person }: { person: IPerson }) => {
     e.stopPropagation();
     const params = new URLSearchParams(searchParams);
     params.set(SearchParams.Details, id);
-    setSearchParams(params);
+    router.push(`?${params.toString()}`);
   };
 
   const handleSelect = (e: React.MouseEvent) => {

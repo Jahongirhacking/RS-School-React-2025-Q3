@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { MainContext, MainProps } from '../pages/mainContext';
+import { MainContext, MainProps } from '../contexts/mainContext';
 import FlyOut from './FlyOut';
 import Pagination from './Pagination';
 import PersonCard from './PersonCard';

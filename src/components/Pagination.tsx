@@ -1,12 +1,15 @@
+'use-client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { MainContext, MainProps } from '../pages/mainContext';
+import { MainContext, MainProps } from '../contexts/mainContext';
 import { SearchParams } from '../utils/config';
 
 const Pagination = () => {
   const context = useContext(MainContext);
   const { charactersData } = context ?? ({} as MainProps);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleChangePage = (step: number) => {
     const params = new URLSearchParams(searchParams);
@@ -14,7 +17,7 @@ const Pagination = () => {
       SearchParams.Page,
       String(Number.parseInt(params.get(SearchParams.Page) ?? '1') + step)
     );
-    setSearchParams(params);
+    router.push(`?${params.toString()}`);
   };
 
   return (
