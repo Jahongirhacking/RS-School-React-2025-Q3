@@ -1,4 +1,4 @@
-import { IApiData } from '../../app/page';
+import { IApiData } from '../../app/[locale]/page';
 import IPerson from '../../types/IPerson';
 import { baseApiUrl } from '../../utils/config';
 import { api } from '../api';

@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { IApiData } from '../app/page';
+import { IApiData } from '../app/[locale]/page';
 
 export interface MainProps {
   charactersData?: IApiData;

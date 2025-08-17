@@ -3,7 +3,8 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { describe, test } from 'vitest';
-import MainApp from '../MainApp';
+import MainLayout from '../app/layout';
+import MainPage from '../app/page';
 
 describe('FlyOut element:', () => {
   let user: UserEvent;
@@ -11,7 +12,7 @@ describe('FlyOut element:', () => {
   beforeEach(() => {
     cleanup();
     user = userEvent.setup();
-    render(<MainApp />);
+    render(<MainLayout params={{ locale: 'en' }}><MainPage /></MainLayout>);
   });
 
   afterEach(() => {

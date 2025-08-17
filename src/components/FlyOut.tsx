@@ -1,7 +1,10 @@
+'use client';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { unselectAll } from '../store/slices/charactersSlice';
 import { RootState } from '../store/store';
-import IPerson from '../types/IPerson';
+import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 const FlyOut = () => {
   const { selected } = useSelector((store: RootState) => store.characters);
@@ -9,26 +12,19 @@ const FlyOut = () => {
 
   if (!selected.length) return null;
 
-  const handleDownload = () => {
-    const header = Object.keys(selected[0]);
+  const handleDownload = async () => {
+    try {
+      const response = await axios.post('/api/download-csv', selected, {
+        responseType: 'blob',
+      });
+      const disposition = response.headers['content-disposition'];
+      const match = disposition?.match(/filename="(.+)"/);
+      const filename = match?.[1] || 'data.csv';
 
-    const csv = [
-      header.join(','),
-      ...selected.map((row: IPerson) =>
-        header
-          .map((field) => {
-            const value = row[field as keyof IPerson];
-            if (Array.isArray(value)) return `"${value.join(', ')}"`;
-            return `"${value ?? ''}"`;
-          })
-          .join(',')
-      ),
-    ].join('\r\n');
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-    setTimeout(() => URL.revokeObjectURL(url), 100);
+      saveAs(response.data, filename);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

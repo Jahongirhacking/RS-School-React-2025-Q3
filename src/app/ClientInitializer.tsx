@@ -1,5 +1,5 @@
-// ClientInitializer.tsx
 'use client';
+
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setSearched, setSelected } from '../store/slices/charactersSlice';

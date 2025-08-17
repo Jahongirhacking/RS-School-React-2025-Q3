@@ -6,6 +6,7 @@ import { handleSelectPerson } from '../store/slices/charactersSlice';
 import { RootState } from '../store/store';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
+import { useTranslations } from 'next-intl';
 
 const PersonCard = ({ person }: { person: IPerson }) => {
   const searchParams = useSearchParams();
@@ -13,6 +14,7 @@ const PersonCard = ({ person }: { person: IPerson }) => {
   const dispatch = useDispatch();
   const id = person?.url?.split('/').slice(-2)?.join('');
   const { selected } = useSelector((store: RootState) => store.characters);
+  const t = useTranslations();
 
   const handleInfoBtnClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,16 +48,16 @@ const PersonCard = ({ person }: { person: IPerson }) => {
         </h4>
       </div>
       <p>
-        Height: <b>{person?.height ?? 'not defined'}</b>
+        {t('height')}: <b>{person?.height ?? 'not defined'}</b>
       </p>
       <p>
-        Mass: <b>{person?.mass ?? 'not defined'}</b>
+        {t('mass')}: <b>{person?.mass ?? 'not defined'}</b>
       </p>
       <p>
-        Gender: <b>{person?.gender ?? 'not defined'}</b>
+        {t('gender')}: <b>{person?.gender ?? 'not defined'}</b>
       </p>
       <button className="card-btn" onClick={handleInfoBtnClick}>
-        More info
+        {t('more_info')}
       </button>
     </div>
   );

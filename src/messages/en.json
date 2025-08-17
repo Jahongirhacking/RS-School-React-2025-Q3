@@ -1,0 +1,16 @@
+{
+    "height": "Height",
+    "mass": "Mass",
+    "gender": "Gender",
+    "searched": "Searched",
+    "search": "Search",
+    "error": "Error",
+    "refresh": "Refresh",
+    "more_info": "More info",
+    "download": "Download",
+    "unselect_all": "Unselect all",
+    "birth_year": "Birth year",
+    "hair_color": "Hair color",
+    "skin_color": "Skin color",
+    "empty": "The list is empty"
+}
