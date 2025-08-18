@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import ErrorButton from './ErrorButton';
 import Input from './Input';

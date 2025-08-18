@@ -4,18 +4,26 @@ import localStorageKeys from '../../utils/localStorageKeys';
 
 export interface ICharactersState {
   selected: IPerson[];
+  searched: string;
 }
 
 const initialState: ICharactersState = {
-  selected:
-    JSON.parse(localStorage.getItem(localStorageKeys.searchedList) || '[]') ||
-    [],
+  selected: [],
+  searched: '',
 };
 
 const charactersSlice = createSlice({
   name: 'charactersSlice',
   initialState,
   reducers: {
+    setSelected: (state, action: PayloadAction<IPerson[]>) => {
+      state.selected = action.payload;
+    },
+
+    setSearched: (state, action: PayloadAction<string>) => {
+      state.searched = action.payload;
+    },
+
     handleSelectPerson: (state, action: PayloadAction<IPerson>) => {
       const url = action.payload?.url;
       if (state.selected.find((person) => person?.url === url)) {
@@ -23,19 +31,24 @@ const charactersSlice = createSlice({
       } else {
         state.selected.push(action.payload);
       }
-      localStorage.setItem(
-        localStorageKeys.searchedList,
-        JSON.stringify(state.selected)
-      );
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(
+          localStorageKeys.searchedList,
+          JSON.stringify(state.selected)
+        );
+      }
     },
 
     unselectAll: (state) => {
       state.selected = [];
-      localStorage.removeItem(localStorageKeys.searchedList);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(localStorageKeys.searchedList);
+      }
     },
   },
 });
 
-export const { handleSelectPerson, unselectAll } = charactersSlice.actions;
+export const { handleSelectPerson, unselectAll, setSelected, setSearched } =
+  charactersSlice.actions;
 
 export default charactersSlice.reducer;

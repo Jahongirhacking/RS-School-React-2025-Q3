@@ -1,17 +1,24 @@
+'use client';
+
 import { useContext } from 'react';
-import { MainContext, MainProps } from '../pages/mainContext';
+import { MainContext, MainProps } from '../contexts/mainContext';
 import FlyOut from './FlyOut';
 import Pagination from './Pagination';
 import PersonCard from './PersonCard';
+import IPerson from '../types/IPerson';
+import { useTranslations } from 'next-intl';
 
 const Main = () => {
   const context = useContext(MainContext);
   const { searched, charactersData, isFetching, isError, isSuccess } =
     context ?? ({} as MainProps);
+  const t = useTranslations();
 
   return (
     <main className="main">
-      <h3>Searched: {searched}</h3>
+      <h3>
+        {t('searched')}: {searched}
+      </h3>
       <div className="card-container">
         {isFetching ? (
           <span aria-label="loading">Loading...</span>
@@ -26,9 +33,14 @@ const Main = () => {
                 {charactersData?.results?.length ? (
                   <>
                     <div className="card-box">
-                      {charactersData?.results?.map((item, index) => (
-                        <PersonCard key={item.created || index} person={item} />
-                      ))}
+                      {charactersData?.results?.map(
+                        (item: IPerson, index: number) => (
+                          <PersonCard
+                            key={item.created || index}
+                            person={item}
+                          />
+                        )
+                      )}
                     </div>
                     <Pagination />
                   </>

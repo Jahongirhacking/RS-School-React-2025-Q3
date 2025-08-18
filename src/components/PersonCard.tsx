@@ -1,21 +1,26 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
 import { handleSelectPerson } from '../store/slices/charactersSlice';
 import { RootState } from '../store/store';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
+import { useTranslations } from 'next-intl';
 
 const PersonCard = ({ person }: { person: IPerson }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const dispatch = useDispatch();
   const id = person?.url?.split('/').slice(-2)?.join('');
   const { selected } = useSelector((store: RootState) => store.characters);
+  const t = useTranslations();
 
   const handleInfoBtnClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const params = new URLSearchParams(searchParams);
     params.set(SearchParams.Details, id);
-    setSearchParams(params);
+    router.push(`?${params.toString()}`);
   };
 
   const handleSelect = (e: React.MouseEvent) => {
@@ -43,16 +48,16 @@ const PersonCard = ({ person }: { person: IPerson }) => {
         </h4>
       </div>
       <p>
-        Height: <b>{person?.height ?? 'not defined'}</b>
+        {t('height')}: <b>{person?.height ?? 'not defined'}</b>
       </p>
       <p>
-        Mass: <b>{person?.mass ?? 'not defined'}</b>
+        {t('mass')}: <b>{person?.mass ?? 'not defined'}</b>
       </p>
       <p>
-        Gender: <b>{person?.gender ?? 'not defined'}</b>
+        {t('gender')}: <b>{person?.gender ?? 'not defined'}</b>
       </p>
       <button className="card-btn" onClick={handleInfoBtnClick}>
-        More info
+        {t('more_info')}
       </button>
     </div>
   );

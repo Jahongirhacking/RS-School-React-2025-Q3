@@ -1,20 +1,25 @@
-import { useSearchParams } from 'react-router-dom';
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetCharacterDetailQuery } from '../services/characters';
 import { SearchParams } from '../utils/config';
+import { useTranslations } from 'next-intl';
 
 const NOT_DEFINED = 'not defined';
 
 const DetailsPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const id = searchParams.get(SearchParams.Details) ?? '';
   const { data: personData, isFetching } = useGetCharacterDetailQuery({ id });
+  const t = useTranslations();
 
   if (!id) return null;
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
     params.delete(SearchParams.Details);
-    setSearchParams(params);
+    router.push(`?${params.toString()}`);
   };
 
   return (
@@ -29,19 +34,29 @@ const DetailsPage = () => {
           'Loading...'
         ) : (
           <>
-            <p>Name: {personData?.name ?? NOT_DEFINED}</p>
-            <p>Gender: {personData?.gender ?? NOT_DEFINED}</p>
-            <p>Birth year: {personData?.birth_year ?? NOT_DEFINED}</p>
-            <p>Height: {personData?.height ?? NOT_DEFINED}</p>
-            <p>Mass: {personData?.mass ?? NOT_DEFINED}</p>
             <p>
-              Hair color: <ColorList colors={personData?.hair_color} />
+              {t('name')}: {personData?.name ?? NOT_DEFINED}
             </p>
             <p>
-              Eye color: <ColorList colors={personData?.eye_color} />
+              {t('gender')}: {personData?.gender ?? NOT_DEFINED}
             </p>
             <p>
-              Skin color: <ColorList colors={personData?.skin_color} />
+              {t('birth_year')}: {personData?.birth_year ?? NOT_DEFINED}
+            </p>
+            <p>
+              {t('height')}: {personData?.height ?? NOT_DEFINED}
+            </p>
+            <p>
+              {t('mass')}: {personData?.mass ?? NOT_DEFINED}
+            </p>
+            <p>
+              {t('hair_color')}: <ColorList colors={personData?.hair_color} />
+            </p>
+            <p>
+              {t('eye_color')}: <ColorList colors={personData?.eye_color} />
+            </p>
+            <p>
+              {t('skin_color')}: <ColorList colors={personData?.skin_color} />
             </p>
           </>
         )}

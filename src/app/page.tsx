@@ -1,17 +1,18 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Main from '../components/Main';
 import Navbar from '../components/Navbar';
+import { MainContext } from '../contexts/mainContext';
 import { useGetCharactersQuery } from '../services/characters';
+import { setSearched } from '../store/slices/charactersSlice';
+import { RootState } from '../store/store';
 import IPerson from '../types/IPerson';
 import { SearchParams } from '../utils/config';
-import handleLocalStorage from '../utils/handleLocalStorage';
 import localStorageKeys from '../utils/localStorageKeys';
-import { MainContext } from './mainContext';
-
-interface MainPageProps {
-  onBtnClick?: (value: string) => void;
-}
+import DetailsPage from './DetailsPage';
 
 export interface IApiData {
   status?: 'ok' | 'pending' | 'error';
@@ -24,12 +25,11 @@ export interface IApiData {
 
 const DEFAULT_PAGE = 1;
 
-const MainPage = ({ onBtnClick }: MainPageProps) => {
+const MainPage = () => {
   const [inputValue, setInputValue] = useState('');
-  const [searched, setSearched] = useState(
-    localStorage.getItem(localStorageKeys.searched) || ''
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searched = useSelector((store: RootState) => store.characters.searched);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const page = searchParams.get(SearchParams.Page);
   const oldSearched = useRef(searched);
   const {
@@ -41,24 +41,20 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
     page: page || undefined,
     search: searched || undefined,
   });
+  const dispatch = useDispatch();
 
-  const changePage = useCallback(
-    (value: string) => {
-      setSearchParams((prevParams) => {
-        const nextParams = new URLSearchParams(prevParams.toString());
-        if (value) {
-          nextParams.set(SearchParams.Page, value);
-        } else {
-          nextParams.delete(SearchParams.Page);
-        }
-        if (nextParams.toString() === prevParams.toString()) {
-          return prevParams; // no change
-        }
-        return nextParams;
-      });
-    },
-    [setSearchParams]
-  );
+  const changePage = useCallback((value: string) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (value) {
+      nextParams.set(SearchParams.Page, value);
+    } else {
+      nextParams.delete(SearchParams.Page);
+    }
+    if (nextParams.toString() === searchParams.toString()) {
+      return searchParams; // no change
+    }
+    router.push(`?${nextParams.toString()}`);
+  }, []);
 
   useEffect(() => {
     if (!searchParams.has(SearchParams.Page)) {
@@ -78,12 +74,6 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
     }
   }, [searched, page]);
 
-  useEffect(() => {
-    const initialValue = handleLocalStorage(localStorageKeys.searched, '');
-    setInputValue(initialValue);
-    setSearched(initialValue);
-  }, []);
-
   return (
     <MainContext.Provider
       value={{
@@ -101,17 +91,13 @@ const MainPage = ({ onBtnClick }: MainPageProps) => {
           }}
           onBtnClick={() => {
             const value = inputValue?.trim();
-            if (onBtnClick) {
-              onBtnClick(value);
-            } else {
-              setSearched(value);
-            }
+            dispatch(setSearched(value));
           }}
         />
         <hr />
         <div className="main-box-container">
           <Main />
-          <Outlet />
+          <DetailsPage />
         </div>
       </div>
     </MainContext.Provider>
