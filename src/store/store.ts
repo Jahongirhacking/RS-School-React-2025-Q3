@@ -1,17 +1,14 @@
-// app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import { api } from '../services/api';
-import charactersReducer from './slices/charactersSlice';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import formReducer from './slices/formSlice';
 
 export const store = configureStore({
   reducer: {
-    characters: charactersReducer,
-    [api.reducerPath]: api.reducer,
+    formReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
 });
 
-// Types for later use
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+
+setupListeners(store.dispatch);
