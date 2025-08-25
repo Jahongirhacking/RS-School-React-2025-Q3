@@ -9,7 +9,7 @@ import {
   FormTypes,
 } from '../components/Forms/types';
 import Modal from '../components/Modal/Modal';
-import { addForm } from '../store/slices/formSlice';
+import { addForm, removeForm } from '../store/slices/formSlice';
 import { RootState } from '../store/store';
 
 const Main = () => {
@@ -59,6 +59,7 @@ const Main = () => {
               <th>Gender</th>
               <th>Country</th>
               <th>Form type</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -73,6 +74,14 @@ const Main = () => {
                 <td>{el?.gender}</td>
                 <td>{el?.country}</td>
                 <td>{el?.source}</td>
+                <td>
+                  <button
+                    className="delete-btn"
+                    onClick={() => dispatch(removeForm(el?.id))}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -25,12 +25,16 @@ const formsSlice = createSlice({
       state.data.push(action.payload);
       localStorage.setItem('data', JSON.stringify(state.data));
     },
+    removeForm: (state, action: PayloadAction<FormData['id']>) => {
+      state.data = state.data?.filter((d) => d?.id !== action.payload);
+      localStorage.setItem('data', JSON.stringify(state.data));
+    },
     setCountries: (state, action: PayloadAction<string[]>) => {
       state.countries = action.payload;
     },
   },
 });
 
-export const { addForm, setCountries } = formsSlice.actions;
+export const { addForm, setCountries, removeForm } = formsSlice.actions;
 
 export default formsSlice.reducer;
