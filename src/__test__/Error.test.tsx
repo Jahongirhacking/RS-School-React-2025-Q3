@@ -20,7 +20,7 @@ describe('ErrorBoundary', () => {
 
   it('catches error and displays fallback UI', () => {
     // silence console.error so test output is clean
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => { });
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(
       <ErrorBoundary>
