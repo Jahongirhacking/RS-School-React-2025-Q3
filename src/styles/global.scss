@@ -1,257 +1,83 @@
-@import './normalize.scss';
-
 * {
-  color: #fff;
-  background-color: #000;
-  border-color: #ddd;
+  margin: 0;
+  padding: 0;
 }
 
-.app-container.light {
-  * {
-    color: #000000;
-    background-color: #ffffff;
-    border-color: #000000;
-  }
+#root {
+  .form-controls {
+    margin: auto;
+    width: fit-content;
 
-  .layout-navbar {
-    background-color: #fff;
-
-    a.active {
-      color: blue;
+    button {
+      margin: 8px 12px;
+      padding: 8px;
     }
   }
 
-  .nav {
-    background-color: #ddd;
-  }
+  table {
+    margin: auto;
+    td {
+      padding: 5px;
+      border-collapse: collapse;
 
-  .footer {
-    background-color: #ddd;
-  }
-
-  .main > h3 {
-    color: #fff;
-  }
-}
-
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  max-height: 100dvh;
-  height: 100dvh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-
-  .layout-navbar {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 8px;
-    background-color: #222;
-    border-bottom: 1px solid #333;
-
-    a {
-      background-color: transparent;
-
-      &.active {
-        color: aqua;
+      .delete-btn {
+        background-color: rgb(170, 0, 0);
+        padding: 4px;
+        color: #fff;
+        border: none;
+        cursor: pointer;
       }
     }
   }
-
-  .layout-body {
-    flex: 1;
-  }
-
-  .footer {
-    background-color: #222;
-    border-top: 1px solid #333;
-    text-align: center;
-    padding: 3px;
-  }
 }
 
-.container {
+.modal-overlay {
+  background-color: #00000009;
+  backdrop-filter: blur(3px);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  .nav {
-    padding: 20px 10px;
-    background-color: rgb(34, 34, 34);
+  .modal {
+    width: min(calc(100% - 20px), 500px);
+    border: 1px solid #000;
+    padding: 10px;
+    background-color: #ffffffe3;
 
-    input,
-    button {
-      border-width: 1px;
-      border-style: solid;
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #000;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+
+      button {
+        padding: 4px;
+      }
     }
 
-    form {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      background-color: inherit;
-
-      input {
-        padding: 5px 10px;
-
-        &:focus {
-          outline: none;
+    .modal-content {
+      form {
+        & > div {
+          margin-bottom: 12px;
+          display: flex;
+          gap: 12px;
+          align-items: center;
         }
+      }
+      p {
+        color: red;
       }
 
       button {
-        padding: 5px 10px;
+        padding: 4px;
       }
     }
-  }
-
-  .main-box-container {
-    display: flex;
-    width: 100%;
-    height: calc(100dvh - 130px);
-
-    .person-details {
-      flex: 1;
-      max-width: 300px;
-      padding: 10px 12px;
-
-      .details-title {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-
-        button {
-          cursor: pointer;
-          padding: 5px;
-          border: none;
-          background-color: #ddd;
-          color: #000;
-        }
-      }
-
-      .details-body {
-        margin-top: 18px;
-
-        p {
-          margin-bottom: 8px;
-        }
-      }
-    }
-
-    .main {
-      flex: 3;
-      padding: 20px 10px 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      background-image: url('/background.jpg');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      position: relative;
-
-      h3 {
-        background-color: transparent;
-      }
-
-      .card-container {
-        background-color: transparent;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        align-items: center;
-
-        .card-box {
-          width: 100%;
-        }
-
-        .pagination {
-          .controls {
-            display: flex;
-            gap: 12px;
-            padding: 10px 18px;
-            align-items: center;
-          }
-
-          button {
-            cursor: pointer;
-            padding: 4px 8px;
-            border: none;
-            background-color: #ddd;
-            color: #000;
-          }
-        }
-
-        .card-box {
-          background-color: transparent;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-
-        .card {
-          padding: 15px;
-          border: 2px solid #ddd;
-          border-radius: 4px;
-
-          @media screen and (max-width: 400px) {
-            width: 100%;
-          }
-          @media (min-width: 401px) and (max-width: 800px) {
-            width: calc(50% - 5px);
-          }
-          @media (min-width: 801px) and (max-width: 1200px) {
-            width: calc(33% - 5px);
-          }
-          @media (min-width: 1201px) and (max-width: 1600px) {
-            width: calc(25% - 10px);
-          }
-          @media (min-width: 1601px) {
-            width: calc(20% - 10px);
-          }
-
-          h4 {
-            margin-bottom: 12px;
-          }
-
-          p {
-            margin-bottom: 6px;
-          }
-
-          .card-btn {
-            background-color: #ddd;
-            color: #000;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-top: 4px;
-            cursor: pointer;
-          }
-        }
-      }
-    }
-  }
-}
-
-.flyout-element {
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px;
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  align-items: center;
-  border: 1px solid #000;
-
-  button {
-    padding: 3px;
-    border: 1px solid #ddd;
-    cursor: pointer;
   }
 }
