@@ -4,28 +4,30 @@
 }
 
 #root {
-  .form-controls {
-    margin: auto;
-    width: fit-content;
+  padding: 8px;
 
-    button {
-      margin: 8px 12px;
-      padding: 8px;
+  .select-btn {
+    padding: 4px 6px;
+    min-width: min(130px, 100%);
+  }
+
+  .select-list {
+    background-color: #ffffffe3;
+    z-index: 3;
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+
+    div[role='option'] {
+      padding: 5px 8px;
+      border-bottom: 1px solid;
     }
   }
 
   table {
-    margin: auto;
     td {
-      padding: 5px;
-      border-collapse: collapse;
-
-      .delete-btn {
-        background-color: rgb(170, 0, 0);
-        padding: 4px;
-        color: #fff;
-        border: none;
-        cursor: pointer;
+      &.change {
+        background-color: aquamarine;
       }
     }
   }
