@@ -6,8 +6,6 @@ Profiling was conducted using React Dev Tools Profiler with the following settin
 
 ✅ "Record why each component rendered while profiling" - Enabled
 
-✅ "Hide commits below 0.1ms" - Enabled
-
 🔄 Multiple iterations per test case for accurate results
 
 # Column Sorting
